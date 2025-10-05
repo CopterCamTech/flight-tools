@@ -1,7 +1,7 @@
 🛩️ flight-tools: Modular UAV Log Analysis Suite
 flight-tools is a modular toolkit for analyzing UAV flight logs in both ArduPilot and PX4 formats. Designed for clarity, extensibility, and reproducibility, it helps users extract insights from .bin, .ulg, and other telemetry formats using a clean web interface and customizable plots.
 
-🛫 Live version available at [flight-tools.coptercam.tech](https://flight-tools.coptercam.tech)
+🛫 Live version available at [flight-tools.coptercam.tech](https://flight-tools.coptercam.tech/flight-tools)
 
 🚀 Features
 📊 Power analysis, parameter inspection, and URI decoding for .bin and .ulg logs
