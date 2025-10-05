@@ -1,0 +1,30 @@
+# Python bytecode and cache
+__pycache__/
+*.pyc
+
+# Virtual environments and Python setup
+venv/
+lib/
+lib64/
+include/
+bin/
+pyvenv.cfg
+share/
+
+# Runtime uploads and logs
+uploads/
+*.log
+*.db
+
+# Optional: exclude local clones of dependencies
+mavlink/
+pymavlink_src/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Local clones of dependencies
+mavlink/
+pymavlink_src/
+
