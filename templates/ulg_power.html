@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <title>PX4 Power Metrics</title>
+</head>
+<body>
+    <h1>PX4 Power Plot</h1>
+
+    {% if filename %}
+        <p><strong>File:</strong> {{ filename }}</p>
+    {% endif %}
+
+    {% if result.error %}
+        <p style="color: red;"><strong>Error:</strong> {{ result.error }}</p>
+    {% elif result %}
+        <div>
+            {{ result.figure|safe }}
+        </div>
+    {% else %}
+        <p>No power data found or file not processed.</p>
+    {% endif %}
+
+    <hr>
+    <a href="/ulg-power">Upload another file</a>
+</body>
+</html>
+

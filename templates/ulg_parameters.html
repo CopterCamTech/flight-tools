@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+    <title>PX4 Parameters</title>
+</head>
+<body>
+
+    <h1>PX4 Parameters</h1>
+    {% if filename %}
+        <p><strong>File:</strong> {{ filename }}</p>
+    {% endif %}
+
+    {% if result %}
+        {% if result.error %}
+            <p style="color: red;"><strong>Error:</strong> {{ result.error }}</p>
+        {% elif result.parameters %}
+            <table border="1" cellpadding="5" cellspacing="0">
+                <tr>
+                    <th>Parameter</th>
+                    <th>Value</th>
+                </tr>
+                {% for param, value in result.parameters.items() %}
+                <tr>
+                    <td>{{ param }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No parameters found in the uploaded log file.</p>
+        {% endif %}
+    {% endif %}
+
+    <hr>
+    <a href="/ulg-parameters">Upload another file</a>
+</body>
+</html>
+

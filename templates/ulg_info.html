@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <title>PX4 Log Info</title>
+</head>
+<body>
+    <h1>PX4 Log Summary</h1>
+
+    {% if result.error %}
+        <p style="color: red;"><strong>Error:</strong> {{ result.error }}</p>
+    {% else %}
+        <p><strong>Total Messages:</strong> {{ result.total_messages }}</p>
+        <p><strong>Log Duration:</strong> {{ result.log_duration }}</p>
+
+        <h2>Message Types</h2>
+        <ul>
+        {% for msg_type in result.message_types %}
+            <li>{{ msg_type }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    <hr>
+    <a href="/ulg-info">Upload another file</a>
+</body>
+</html>
+
