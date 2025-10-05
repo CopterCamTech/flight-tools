@@ -22,7 +22,7 @@ flight-tools/
 ├── tools/                  # Core analysis modules and plotting utilities
 ├── LICENSE                 # MIT License
 ├── README.md               # This file
-└── .gitignore              # Repo hygiene rules
+└── .gitignore              # Repo hygiene rules (customizable by contributors)
 ```
 
 ⚙️ Getting Started
