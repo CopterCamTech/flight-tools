@@ -14,6 +14,7 @@ flight-tools is a modular toolkit for analyzing UAV flight logs in both ArduPilo
 
 📁 Project Structure
 Code
+```text
 flight-tools/
 ├── app.py                  # Main Flask app
 ├── templates/              # HTML templates for UI
@@ -21,6 +22,7 @@ flight-tools/
 ├── LICENSE                 # MIT License
 ├── README.md               # This file
 └── .gitignore              # Repo hygiene rules
+```bash
 ⚙️ Getting Started
 Clone the repo:
 
