@@ -30,7 +30,10 @@ flight-tools/
 └── .gitignore              # Repo hygiene rules (customizable by contributors)
 ```
 
+---
+
 ⚙️ Getting Started
+
 Clone the repo:
 
 ```bash
@@ -86,6 +89,8 @@ Upload a `.BIN` or `.ULG` log file and explore the analysis modules:
 
 - `/bin-power`, `/bin-info`, `/bin-parameters`
 - `/ulg-power`, `/ulg-info`, `/ulg-parameters`
+
+---
 
 🧠 Philosophy
 This project values:
