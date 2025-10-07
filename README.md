@@ -3,6 +3,8 @@ flight-tools is a modular toolkit for analyzing UAV flight logs in both ArduPilo
 
 🛫 Live version available at [coptercam.tech](https://coptercam.tech/flight-tools/)
 
+---
+
 🚀 Features
 📊 Power analysis, parameter inspection, and URI decoding for .bin and .ulg logs
 
@@ -14,8 +16,9 @@ flight-tools is a modular toolkit for analyzing UAV flight logs in both ArduPilo
 
 🧼 Clean separation of runtime artifacts and source code for maintainability
 
+---
+
 📁 Project Structure
-Code
 
 ```text
 flight-tools/
@@ -34,13 +37,55 @@ Clone the repo:
 git clone https://github.com/CopterCamTech/flight-tools.git
 cd flight-tools
 ```
-Install dependencies: (Coming soon: requirements.txt)
+Install system packages:
+
+```bash
+sudo apt update
+sudo apt install -y python3-venv python3-dev \
+    build-essential libxml2-dev libxslt1-dev zlib1g-dev \
+    libffi-dev libjpeg-dev libpng-dev libatlas-base-dev \
+    libopenblas-dev liblapack-dev gfortran \
+    git curl unzip
+```
+
+Create and activate a python virtual environment:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Install Python dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Clone and install ArduPilot's `pymavlink` (required for `.BIN` log support):
+
+```bash
+git clone https://github.com/ArduPilot/pymavlink.git
+cd pymavlink
+pip install .
+cd ..
+```
 
 Run the app:
 
-bash
+```bash
 python app.py
-Upload a log file and explore the analysis modules.
+```
+
+Then open your browser and visit:
+
+```code
+http://localhost:5000
+```
+
+Upload a `.BIN` or `.ULG` log file and explore the analysis modules:
+
+- `/bin-power`, `/bin-info`, `/bin-parameters`
+- `/ulg-power`, `/ulg-info`, `/ulg-parameters`
 
 🧠 Philosophy
 This project values:
