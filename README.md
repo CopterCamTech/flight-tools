@@ -4,7 +4,7 @@ This guide walks you through installing and running `flight-tools` on a Linux-ba
 
 ---
 
-## 📦 Requirements
+### 📦 Requirements
 
 - Linux-based system with internet access
 - Git installed (`sudo apt install git`)
@@ -13,7 +13,7 @@ This guide walks you through installing and running `flight-tools` on a Linux-ba
 
 ---
 
-## 🐍 Step 0: Check for Python 3.11
+### 🐍 Step 0: Check for Python 3.11
 
 Run:
 
@@ -22,14 +22,14 @@ python3.11 --version
 ```
 If Python 3.11 is not installed, follow one of these methods:
 
-## Option A: Install via package manager (if available)
+### Option A: Install via package manager (if available)
 
 ```bash
 sudo apt update
 sudo apt install python3.11 python3.11-venv python3.11-dev
 ```
 
-## Option B: Install from source
+### Option B: Install from source
 
 sudo apt install -y build-essential libssl-dev zlib1g-dev \
 libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev \
@@ -52,27 +52,27 @@ Verify:
 python3.11 --version
 ```
 
-## 📁 Step 1: Clone the repository
+### 📁 Step 1: Clone the repository
 
 ```bash
 cd ~
 git clone https://github.com/coptercamtech/flight-tools.git ~/flight-tools
 ```
 
-## 🧪 Step 2: Create and activate the virtual environment
+### 🧪 Step 2: Create and activate the virtual environment
 
 ```bash
 python3.11 -m venv ~/flight-tools
 source ~/flight-tools/bin/activate
 ```
 
-## 📦 Step 3: Install dependencies
+### 📦 Step 3: Install dependencies
 
 ```bash
 pip install -r ~/flight-tools/requirements.txt
 ```
 
-## 📂 Step 4: Add `pymavlink_src` if required
+### 📂 Step 4: Add `pymavlink_src` if required
 If the application expects a local file like `pymavlink_src/DFReader.py`, and this directory is not included in the repository, you can manually add it:
 
 ```bash
@@ -82,7 +82,7 @@ wget https://raw.githubusercontent.com/ArduPilot/pymavlink/master/DFReader.py
 ```
 This pulls the public version of `DFReader.py` from the upstream `pymavlink` GitHub repo.
 
-## 🚀 Step 5: Launch the app
+### 🚀 Step 5: Launch the app
 
 ```bash
 cd ~/flight-tools
@@ -91,7 +91,7 @@ python app.py
 
 Visit http://localhost:5000 in your browser to confirm the interface loads and all modules respond.
 
-## 🧭 Notes
+### 🧭 Notes
 
 - This guide assumes Python 3.11 is required for compatibility. Python 3.12 and 3.13 are untested.
 
