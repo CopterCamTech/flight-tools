@@ -91,7 +91,7 @@ python app.py
 
 Visit http://localhost:5000 in your browser to confirm the interface loads and all modules respond.
 
-## 🧭 Noes
+## 🧭 Notes
 
 - This guide assumes Python 3.11 is required for compatibility. Python 3.12 and 3.13 are untested.
 
