@@ -1,120 +1,107 @@
-🛩️ flight-tools: Modular UAV Log Analysis Suite
-flight-tools is a modular toolkit for analyzing UAV flight logs in both ArduPilot and PX4 formats. Designed for clarity, extensibility, and reproducibility, it helps users extract insights from .bin, .ulg, and other telemetry formats using a clean web interface and customizable plots.
+# 🛠️ Flight Tools: Installation Guide
 
-🛫 Live version available at [coptercam.tech](https://coptercam.tech/flight-tools/)
-
----
-
-🚀 Features
-📊 Power analysis, parameter inspection, and URI decoding for .bin and .ulg logs
-
-🧩 Modular architecture with reusable plotting utilities and templates
-
-🖥️ Lightweight web interface built with Flask and HTML templates
-
-🔍 Supports both ArduPilot and PX4 log formats
-
-🧼 Clean separation of runtime artifacts and source code for maintainability
+This guide walks you through installing and running `flight-tools` on a Linux-based system. It ensures reproducibility and matches the production environment used at [flight-tools.coptercam.tech](https://flight-tools.coptercam.tech).
 
 ---
 
-📁 Project Structure
+## 📦 Requirements
 
-```text
-flight-tools/
-├── app.py                  # Main Flask app
-├── templates/              # HTML templates for UI
-├── tools/                  # Core analysis modules and plotting utilities
-├── LICENSE                 # MIT License
-├── README.md               # This file
-└── .gitignore              # Repo hygiene rules (customizable by contributors)
-```
+- Linux-based system with internet access
+- Git installed (`sudo apt install git`)
+- Python **3.11.x** installed and available as `python3.11`
+- Ability to create and activate virtual environments
 
 ---
 
-⚙️ Getting Started
+## 🐍 Step 0: Check for Python 3.11
 
-Clone the repo:
+Run:
 
 ```bash
-git clone https://github.com/CopterCamTech/flight-tools.git
-cd flight-tools
+python3.11 --version
 ```
-Install system packages:
+If Python 3.11 is not installed, follow one of these methods:
+
+##Option A: Install via package manager (if available)
 
 ```bash
 sudo apt update
-sudo apt install -y python3-venv python3-dev \
-    build-essential libxml2-dev libxslt1-dev zlib1g-dev \
-    libffi-dev libjpeg-dev libpng-dev libatlas-base-dev \
-    libopenblas-dev liblapack-dev gfortran \
-    git curl unzip
+sudo apt install python3.11 python3.11-venv python3.11-dev
 ```
 
-Create and activate a python virtual environment:
+##Option B: Install from source
+
+sudo apt install -y build-essential libssl-dev zlib1g-dev \
+libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev \
+libgdbm-dev libdb5.3-dev libbz2-dev libexpat1-dev liblzma-dev \
+tk-dev libffi-dev wget
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate
+cd /usr/src
+sudo wget https://www.python.org/ftp/python/3.11.13/Python-3.11.13.tgz
+sudo tar xzf Python-3.11.13.tgz
+cd Python-3.11.13
+sudo ./configure --enable-optimizations
+sudo make -j4
+sudo make altinstall
 ```
 
-Install Python dependencies:
+Verify:
 
 ```bash
-pip install -r requirements.txt
+python3.11 --version
 ```
 
-Clone and install ArduPilot's `pymavlink` (required for `.BIN` log support):
+##📁 Step 1: Clone the repository
 
 ```bash
-git clone https://github.com/ArduPilot/pymavlink.git
-cd pymavlink
-pip install .
-cd ..
+cd ~
+git clone https://github.com/coptercamtech/flight-tools.git ~/flight-tools
 ```
 
-Run the app:
+##🧪 Step 2: Create and activate the virtual environment
 
 ```bash
+python3.11 -m venv ~/flight-tools
+source ~/flight-tools/bin/activate
+```
+
+##📦 Step 3: Install dependencies
+
+```bash
+pip install -r ~/flight-tools/requirements.txt
+```
+
+##📂 Step 4: Add `pymavlink_src` if required
+If the application expects a local file like `pymavlink_src/DFReader.py`, and this directory is not included in the repository, you can manually add it:
+
+```bash
+mkdir -p ~/flight-tools/pymavlink_src
+cd ~/flight-tools/pymavlink_src
+wget https://raw.githubusercontent.com/ArduPilot/pymavlink/master/DFReader.py
+```
+This pulls the public version of `DFReader.py` from the upstream `pymavlink` GitHub repo.
+
+##🚀 Step 5: Launch the app
+
+```bash
+cd ~/flight-tools
 python app.py
 ```
 
-Then open your browser and visit:
+Visit http://localhost:5000 in your browser to confirm the interface loads and all modules respond.
 
-```code
-http://localhost:5000
-```
+##🧭 Noes
 
-Upload a `.BIN` or `.ULG` log file and explore the analysis modules:
+- This guide assumes Python 3.11 is required for compatibility. Python 3.12 and 3.13 are untested.
 
-- `/bin-power`, `/bin-info`, `/bin-parameters`
-- `/ulg-power`, `/ulg-info`, `/ulg-parameters`
+- All dependencies are installed from public sources. No proprietary files are included in the repository.
 
----
+- The virtual environment is embedded directly in the project root for simplicity.
 
-🧠 Philosophy
-This project values:
 
-Transparency: Every module is documented and reproducible
 
-Modularity: Tools are loosely coupled and easy to extend
 
-Community: Designed to onboard contributors with minimal friction
 
-🤝 Contributing
-We welcome thoughtful contributions! Please:
 
-Fork the repo and create a feature branch
 
-Follow naming conventions and commit hygiene
-
-Submit a pull request with a clear description
-
-Coming soon:
-
-Contributor checklist
-
-Module onboarding guide
-
-📜 License
-This project is licensed under the MIT License.
