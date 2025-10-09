@@ -1,27 +1,17 @@
 import os
 import sys
-import importlib.util
-
-# Add the renamed pymavlink source folder to sys.path
-pymavlink_path = os.path.abspath('pymavlink_src')
-sys.path.insert(0, pymavlink_path)
+import pymavlink
+from pymavlink import DFReader
 
 # Set MAVLink dialect explicitly
 os.environ['MAVLINK_DIALECT'] = 'ardupilotmega'
-
-# Load DFReader.py dynamically
-dfreader_path = os.path.join(pymavlink_path, 'DFReader.py')
-spec = importlib.util.spec_from_file_location("DFReader", dfreader_path)
-DFReader_module = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(DFReader_module)
-DFReader_binary = DFReader_module.DFReader_binary
 
 def extract_bin_info(filepath):
     try:
         if not os.path.exists(filepath):
             return {'error': f"File not found: {filepath}"}
 
-        reader = DFReader_binary(filepath)
+        reader = DFReader.DFReader_binary(filepath)
 
         message_types = set()
         total_messages = 0

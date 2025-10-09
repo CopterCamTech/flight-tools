@@ -6,6 +6,9 @@ import numpy as np
 import os
 
 def generate_power_plot(filepath):
+    if not os.path.exists(filepath):
+        return {'error': f"File not found: {filepath}"}
+
     reader = mavutil.mavlink_connection(filepath)
     timestamps = []
     current_data = []
@@ -39,30 +42,25 @@ def generate_power_plot(filepath):
     # Plotting
     fig, ax1 = plt.subplots(figsize=(12, 6))
 
-    # Voltage on left axis
     ax1.plot(timestamps, voltage_data, color='blue')
     ax1.set_xlabel('Time (s)')
     ax1.set_ylabel('Voltage (V)', color='blue')
     ax1.tick_params(axis='y', labelcolor='blue')
     ax1.grid(True)
 
-    # Current on right axis
     ax2 = ax1.twinx()
     ax2.plot(timestamps, current_data, color='red')
     ax2.set_ylabel('Current (A)', color='red')
     ax2.tick_params(axis='y', labelcolor='red')
 
-    # Watt-Hours on third axis (offset right)
     ax3 = ax1.twinx()
     ax3.spines.right.set_position(("axes", 1.1))
     ax3.plot(timestamps, watt_hours, color='green')
     ax3.set_ylabel('Watt-Hours (Wh)', color='green')
     ax3.tick_params(axis='y', labelcolor='green')
 
-    # Title
     plt.title('ArduPilot Power Metrics', fontsize=14)
 
-    # Encode plot
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
