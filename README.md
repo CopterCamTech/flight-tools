@@ -1,8 +1,8 @@
-# ✈️ Flight-Tools: Modular UAV Log Analysis Suite
+## ✈️ Flight-Tools: Modular UAV Log Analysis Suite
 
 **Flight-Tools** is a lightweight, modular diagnostic suite for analyzing UAV log files from ArduPilot (`.bin`) and PX4 (`.ulg`) systems. It’s designed for clarity, reproducibility, and community onboarding.
 
-🔍 Features
+### 🔍 Features
 Power analysis and current draw visualization
 
 - Parameter listing and metadata extraction
@@ -13,7 +13,7 @@ Power analysis and current draw visualization
 
 - Web-based interface for log upload and analysis
 
-📁 Project Structure
+### 📁 Project Structure
 ```text
 flight-tools/
 ├── app.py                  # Main Flask app
@@ -26,7 +26,8 @@ flight-tools/
 ├── requirements.txt        # Python dependencies
 └── README.md
 ```
-🚀 Getting Started
+
+### 🚀 Getting Started
 
 1. Clone the repository
 ```bash
@@ -52,7 +53,7 @@ python app.py
 
 Then visit `http://localhost:5000` in your browser and upload a .bin or .ulg file to begin analysis.
 
-👥 Contributing
+### 👥 Contributing
 
 - We welcome clean, modular contributions that align with the project’s goals:
 
@@ -72,6 +73,6 @@ The routing in 'app.py' maps uploaded '.bin' and '.ulg' logs to specific analysi
 
 Please fork the repo, make changes in a feature branch, and submit a pull request with a clear description.
 
-📜 License
+### 📜 License
 
 This project is licensed under the MIT License.
