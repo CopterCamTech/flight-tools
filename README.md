@@ -13,6 +13,26 @@ Power analysis and current draw visualization
 
 - Web-based interface for log upload and analysis
 
+---
+
+## 🚀 Live Demo
+
+You can explore a live version of the flight-tools suite at:
+
+🔗 [https://www.coptercam.tech/flight-tools](https://www.coptercam.tech/flight-tools)
+
+This deployment is hosted on a secure production server running Python 3.13, Gunicorn, and Nginx. It reflects the latest GitHub-tracked version of the codebase and is updated regularly.
+
+🛠️ Features available in the live demo:
+- ArduPilot and PX4 log analysis
+- Modular diagnostic overlays
+- Upload interface for `.bin` and `.ulg` files
+- Real-time feedback and error handling
+
+📦 This is a reference implementation for contributors and collaborators. Feel free to explore the interface before diving into the code.
+
+---
+
 ### 📁 Project Structure
 ```text
 flight-tools/
@@ -26,6 +46,8 @@ flight-tools/
 ├── requirements.txt        # Python dependencies
 └── README.md
 ```
+
+---
 
 ### 🚀 Getting Started
 
@@ -53,6 +75,8 @@ python app.py
 
 Then visit `http://localhost:5000` in your browser and upload a .bin or .ulg file to begin analysis.
 
+---
+
 ### 👥 Contributing
 
 - We welcome clean, modular contributions that align with the project’s goals:
@@ -72,6 +96,8 @@ The routing in 'app.py' maps uploaded '.bin' and '.ulg' logs to specific analysi
 - Update the UI in 'templates/' to expose the new functionality
 
 Please fork the repo, make changes in a feature branch, and submit a pull request with a clear description.
+
+---
 
 ### 📜 License
 
