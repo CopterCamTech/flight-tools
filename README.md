@@ -1,107 +1,76 @@
-# 🛠️ Flight Tools: Installation Guide
+✈️ Flight-Tools: Modular UAV Log Analysis Suite
+**Flight-Tools** is a lightweight, modular diagnostic suite for analyzing UAV log files from ArduPilot (`.bin`) and PX4 (`.ulg`) systems. It’s designed for clarity, reproducibility, and community onboarding.
 
-This guide walks you through installing and running `flight-tools` on a Linux-based system. It ensures reproducibility and matches the production environment used at [flight-tools.coptercam.tech](https://flight-tools.coptercam.tech).
+🔍 Features
+Power analysis and current draw visualization
 
----
+- Parameter listing and metadata extraction
 
-### 📦 Requirements
+- URI decoding and message inspection
 
-- Linux-based system with internet access
-- Git installed (`sudo apt install git`)
-- Python **3.11.x** installed and available as `python3.11`
-- Ability to create and activate virtual environments
+- Modular architecture for easy extension
 
----
+- Web-based interface for log upload and analysis
 
-### 🐍 Step 0: Check for Python 3.11
-
-Run:
-
-```bash
-python3.11 --version
+📁 Project Structure
+```text
+flight-tools/
+├── app.py                  # Main Flask app
+├── templates/              # HTML templates
+├── tools/                  # Analysis modules
+│   ├── bin_info.py
+│   ├── bin_parameter_list.py
+│   ├── bin_power_plot.py
+├── static/                 # CSS and JS assets
+├── requirements.txt        # Python dependencies
+└── README.md
 ```
-If Python 3.11 is not installed, follow one of these methods:
+🚀 Getting Started
 
-### Option A: Install via package manager (if available)
-
+1. Clone the repository
 ```bash
-sudo apt update
-sudo apt install python3.11 python3.11-venv python3.11-dev
-```
-
-### Option B: Install from source
-
-sudo apt install -y build-essential libssl-dev zlib1g-dev \
-libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev \
-libgdbm-dev libdb5.3-dev libbz2-dev libexpat1-dev liblzma-dev \
-tk-dev libffi-dev wget
-
-```bash
-cd /usr/src
-sudo wget https://www.python.org/ftp/python/3.11.13/Python-3.11.13.tgz
-sudo tar xzf Python-3.11.13.tgz
-cd Python-3.11.13
-sudo ./configure --enable-optimizations
-sudo make -j4
-sudo make altinstall
+git clone https://github.com/CopterCamTech/flight-tools.git
+cd flight-tools
 ```
 
-Verify:
-
+2. Create and activate a virtual environment
 ```bash
-python3.11 --version
+python -m venv venv
+source venv/bin/activate
 ```
 
-### 📁 Step 1: Clone the repository
-
+3. Install dependencies
 ```bash
-cd ~
-git clone https://github.com/coptercamtech/flight-tools.git ~/flight-tools
+pip install -r requirements.txt
 ```
 
-### 🧪 Step 2: Create and activate the virtual environment
-
+4. Launch the app
 ```bash
-python3.11 -m venv ~/flight-tools
-source ~/flight-tools/bin/activate
-```
-
-### 📦 Step 3: Install dependencies
-
-```bash
-pip install -r ~/flight-tools/requirements.txt
-```
-
-### 📂 Step 4: Add `pymavlink_src` if required
-If the application expects a local file like `pymavlink_src/DFReader.py`, and this directory is not included in the repository, you can manually add it:
-
-```bash
-mkdir -p ~/flight-tools/pymavlink_src
-cd ~/flight-tools/pymavlink_src
-wget https://raw.githubusercontent.com/ArduPilot/pymavlink/master/DFReader.py
-```
-This pulls the public version of `DFReader.py` from the upstream `pymavlink` GitHub repo.
-
-### 🚀 Step 5: Launch the app
-
-```bash
-cd ~/flight-tools
 python app.py
 ```
 
-Visit http://localhost:5000 in your browser to confirm the interface loads and all modules respond.
+Then visit `http://localhost:5000` in your browser and upload a .bin or .ulg file to begin analysis.
 
-### 🧭 Notes
+👥 Contributing
 
-- This guide assumes Python 3.11 is required for compatibility. Python 3.12 and 3.13 are untested.
+- We welcome clean, modular contributions that align with the project’s goals:
 
-- All dependencies are installed from public sources. No proprietary files are included in the repository.
+- Add new analysis modules to 'tools/'
 
-- The virtual environment is embedded directly in the project root for simplicity.
+- Improve UI/UX in 'templates/'
 
+- Refactor for clarity and reproducibility
 
+The routing in 'app.py' maps uploaded '.bin' and '.ulg' logs to specific analysis functions. If you're adding a new tool, you'll likely need to:
 
+- Define a new route in 'app.py'
 
+- Connect it to your module in 'tools/'
 
+- Update the UI in 'templates/' to expose the new functionality
 
+Please fork the repo, make changes in a feature branch, and submit a pull request with a clear description.
 
+📜 License
+
+This project is licensed under the MIT License.
