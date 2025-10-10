@@ -1,8 +1,10 @@
+import os
 from pymavlink import mavutil
 
 def extract_parameters(filepath):
     try:
-#        print("Received file path:", filepath)
+        if not os.path.exists(filepath):
+            return {'error': f"File not found: {filepath}"}
 
         mlog = mavutil.mavlink_connection(filepath)
         param_dict = {}
@@ -13,14 +15,11 @@ def extract_parameters(filepath):
                 break
 
             msg_type = msg.get_type()
-#            print("Message type:", msg_type)
 
             if msg_type == 'PARAM_VALUE':
-#                print("Found PARAM_VALUE:", msg.param_id, msg.param_value)
                 param_dict[msg.param_id] = msg.param_value
 
             elif msg_type == 'PARM':
-#                print("Found PARM:", msg.Name, msg.Value)
                 param_dict[msg.Name] = msg.Value
 
         if not param_dict:
