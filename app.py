@@ -26,8 +26,6 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-ulog_cache = {}
-
 def upload_form(route, label, extension):
     return f'''
         <h1>Upload {label}</h1>
@@ -172,7 +170,6 @@ def ulg_explorer():
         file.save(filepath)
 
         ulog, message_types = parse_ulg_file(filepath)
-        ulog_cache[filename] = ulog
 
         return render_template("ulg_explorer.html",
                                filename=filename,
@@ -184,15 +181,17 @@ def ulg_explorer():
     filename = request.form.get("filename")
     selected_msg_type = request.form.get("msg_type")
     selected_field = request.form.get("field")
-    ulog = ulog_cache.get(filename)
 
-    if not ulog:
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    if not os.path.exists(filepath):
         return render_template("ulg_explorer.html",
                                filename=None,
                                message_types=[],
                                selected_msg_type=None,
                                fields=[],
                                data=None)
+
+    ulog, _ = parse_ulg_file(filepath)
 
     if selected_msg_type and not selected_field:
         fields = get_fields_from_log(ulog, selected_msg_type)
