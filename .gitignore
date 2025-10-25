@@ -2,29 +2,25 @@
 __pycache__/
 *.pyc
 
-# Virtual environments and Python setup
-venv/
-lib/
-lib64/
-include/
-bin/
-pyvenv.cfg
-share/
+# Virtual environments
+ft-venv/
+ft-uvenv/
 
 # Runtime uploads and logs
 uploads/
 *.log
 *.db
 
-# Optional: exclude local clones of dependencies
-mavlink/
-pymavlink_src/
+# Development sandbox and reference files
+dev/
+reference/
+
+# PX4 source clone
+px4-definitions/
+
+# Egg-info metadata
+*.egg-info/
 
 # OS-specific files
 .DS_Store
 Thumbs.db
-
-# Local clones of dependencies
-mavlink/
-pymavlink_src/
-

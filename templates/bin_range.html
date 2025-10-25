@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+    <title>ArduPilot Range vs Signal Strength</title>
+</head>
+<body>
+    <h1>ArduPilot Range vs Signal Plot</h1>
+
+    {% if filename %}
+        <p><strong>File:</strong> {{ filename }}</p>
+    {% endif %}
+
+    {% if result and result.error %}
+        <p style="color: red;"><strong>Error:</strong> {{ result.error }}</p>
+    {% elif result %}
+        <div>
+            {{ result.figure|safe }}
+        </div>
+    {% else %}
+        <p>No signal data found or file not processed.</p>
+    {% endif %}
+
+    <hr>
+    <a href="/bin-range">Upload another file</a>
+</body>
+</html>
