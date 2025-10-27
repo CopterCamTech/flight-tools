@@ -41,6 +41,7 @@ def extract_bin_info(filepath):
             duration_str = "Unknown (no valid timestamps)"
 
         return {
+            'filename': os.path.basename(filepath),
             'message_types': sorted(message_types),
             'total_messages': total_messages,
             'log_duration': duration_str,

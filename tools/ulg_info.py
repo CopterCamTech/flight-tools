@@ -11,6 +11,7 @@ def extract_ulg_info(filepath):
         duration = (ulog.last_timestamp - ulog.start_timestamp) / 1e6
 
         return {
+            'filename': os.path.basename(filepath),
             'message_types': message_types,
             'total_messages': total_messages,
             'log_duration': f"{duration:.2f} seconds",

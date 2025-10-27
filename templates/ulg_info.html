@@ -9,6 +9,7 @@
     {% if result.error %}
         <p style="color: red;"><strong>Error:</strong> {{ result.error }}</p>
     {% else %}
+        <p><strong>Filename:</strong> {{ result.filename }}</p>
         <p><strong>Total Messages:</strong> {{ result.total_messages }}</p>
         <p><strong>Log Duration:</strong> {{ result.log_duration }}</p>
 
