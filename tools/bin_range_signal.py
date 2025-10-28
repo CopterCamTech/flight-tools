@@ -62,13 +62,14 @@ def parse_bin_log(filepath):
     return range_rxrssi, range_rxlq, range_rad_rssi
 
 def plot_scatter(range_rxrssi, range_rxlq, range_rad_rssi, filepath):
-    fig, ax1 = plt.subplots(figsize=(12, 6))
+    fig, ax1 = plt.subplots(figsize=(14, 6))
     ax2 = ax1.twinx()
     ax3 = None
 
     ax1.set_ylabel('Control Radio Link Quality (RSSI.RXLQ)', color='green')
-    ax2.set_ylabel('Control Radio RSSI (RSSI.RXRSSI)', color='blue')
     ax1.tick_params(axis='y', labelcolor='green')
+
+    ax2.set_ylabel('Control Radio RSSI (RSSI.RXRSSI)', color='blue')
     ax2.tick_params(axis='y', labelcolor='blue')
 
     if range_rxrssi:
@@ -82,7 +83,9 @@ def plot_scatter(range_rxrssi, range_rxlq, range_rad_rssi, filepath):
     if range_rad_rssi:
         ax3 = ax1.twinx()
         ax3.spines.right.set_position(("axes", 1.12))
-        ax3.set_ylabel('Telemetry Radio RSSI (RAD.RSSI)', color='orange')
+        ax3.plot([], [], color='orange')  # Dummy plot to anchor label
+        ax3.set_ylabel('Telemetry Radio RSSI (RAD.RSSI)', color='orange', fontsize=12)
+        ax3.yaxis.label.set_color('orange')
         ax3.tick_params(axis='y', labelcolor='orange')
 
         x, y = zip(*range_rad_rssi)
@@ -92,6 +95,7 @@ def plot_scatter(range_rxrssi, range_rxlq, range_rad_rssi, filepath):
     ax1.grid(True)
 
     plt.title('ArduPilot Range vs Signal Strength', fontsize=14)
+    fig.tight_layout()
 
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
