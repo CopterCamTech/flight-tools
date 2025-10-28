@@ -40,26 +40,28 @@ def generate_power_plot(filepath):
     watt_hours = watt_sec / 3600
 
     # Plotting
-    fig, ax1 = plt.subplots(figsize=(12, 6))
+    fig, ax1 = plt.subplots(figsize=(14, 6))  # Wider canvas
 
-    ax1.plot(timestamps, voltage_data, color='blue')
+    ax1.plot(timestamps, voltage_data, color='blue', label='Voltage (V)')
     ax1.set_xlabel('Time (s)')
     ax1.set_ylabel('Voltage (V)', color='blue')
     ax1.tick_params(axis='y', labelcolor='blue')
     ax1.grid(True)
 
     ax2 = ax1.twinx()
-    ax2.plot(timestamps, current_data, color='red')
+    ax2.plot(timestamps, current_data, color='red', label='Current (A)')
     ax2.set_ylabel('Current (A)', color='red')
     ax2.tick_params(axis='y', labelcolor='red')
 
     ax3 = ax1.twinx()
     ax3.spines.right.set_position(("axes", 1.1))
-    ax3.plot(timestamps, watt_hours, color='green')
-    ax3.set_ylabel('Watt-Hours (Wh)', color='green')
+    ax3.plot(timestamps, watt_hours, color='green', label='Watt-Hours (Wh)')
+    ax3.set_ylabel('Watt-Hours (Wh)', color='green', fontsize=12)
+    ax3.yaxis.label.set_color('green')
     ax3.tick_params(axis='y', labelcolor='green')
 
     plt.title('ArduPilot Power Metrics', fontsize=14)
+    fig.tight_layout()  # Prevent clipping
 
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
@@ -68,4 +70,3 @@ def generate_power_plot(filepath):
     plt.close()
 
     return {'figure': f'<img src="data:image/png;base64,{image_base64}"/>'}
-

@@ -23,7 +23,7 @@ def generate_power_plot(filepath):
         watt_hours = np.cumsum(power[:-1] * dt_hours)
 
         # === Plot all metrics on one chart ===
-        fig, ax1 = plt.subplots(figsize=(10, 6))
+        fig, ax1 = plt.subplots(figsize=(14, 6))
 
         ax1.set_xlabel('Time (s)')
         ax1.set_ylabel('Voltage (V)', color='blue')
