@@ -2,12 +2,12 @@
 
 import math
 import os
+import argparse
 import base64
 from io import BytesIO
 from pathlib import Path
 import matplotlib.pyplot as plt
 from pyulog import ULog
-import argparse
 
 def compute_range(x, y, z):
     return math.sqrt(x**2 + y**2 + z**2)
@@ -38,8 +38,8 @@ def parse_ulg_log(filepath):
 
     return range_ctrl_rssi, range_ctrl_lq, range_telem_rssi, None
 
-def plot_scatter(ctrl_rssi, ctrl_lq, telem_rssi, filepath):
-    fig, ax1 = plt.subplots(figsize=(14, 6))  # Wider canvas
+def plot_scatter(ctrl_rssi, ctrl_lq, telem_rssi, output_path=None, suppress_gui=False):
+    fig, ax1 = plt.subplots(figsize=(14, 6))
     ax2 = ax1.twinx()
     ax3 = None
 
@@ -60,7 +60,7 @@ def plot_scatter(ctrl_rssi, ctrl_lq, telem_rssi, filepath):
     if telem_rssi:
         ax3 = ax1.twinx()
         ax3.spines.right.set_position(("axes", 1.12))
-        ax3.plot([], [], color='orange')  # Dummy plot to anchor label
+        ax3.plot([], [], color='orange')
         ax3.set_ylabel('Telemetry Radio RSSI (radio_status.rssi)', color='orange', fontsize=12)
         ax3.yaxis.label.set_color('orange')
         ax3.tick_params(axis='y', labelcolor='orange')
@@ -71,15 +71,17 @@ def plot_scatter(ctrl_rssi, ctrl_lq, telem_rssi, filepath):
     ax1.set_xlabel('3D Distance from Home (meters)')
     ax1.grid(True)
     plt.title('PX4 Range vs Signal Strength', fontsize=14)
-    fig.tight_layout()  # Prevent clipping
+    fig.tight_layout()
 
-    buffer = BytesIO()
-    plt.savefig(buffer, format='png')
-    buffer.seek(0)
-    image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
-    plt.close()
-
-    return f'<img src="data:image/png;base64,{image_base64}"/>'
+    if output_path:
+        plt.savefig(output_path)
+        plt.close()
+        print(f"✅ Plot saved to {output_path}")
+    elif suppress_gui:
+        plt.close()
+        print("✅ Plot generated (GUI suppressed)")
+    else:
+        plt.show()
 
 def validate_input_file(path_str):
     path = Path(path_str)
@@ -101,13 +103,52 @@ def flask_entry(input_path):
     if not (ctrl_rssi or ctrl_lq or telem_rssi):
         return {'error': 'No valid signal data found in log file.'}
 
-    figure_html = plot_scatter(ctrl_rssi, ctrl_lq, telem_rssi, str(path))
-    return {'figure': figure_html}
+    fig, ax1 = plt.subplots(figsize=(14, 6))
+    ax2 = ax1.twinx()
+    ax3 = None
 
-def main():
+    ax1.set_ylabel('Control Radio Link Quality (input_rc.link_quality)', color='green')
+    ax1.tick_params(axis='y', labelcolor='green')
+
+    ax2.set_ylabel('Control Radio RSSI (input_rc.rssi)', color='blue')
+    ax2.tick_params(axis='y', labelcolor='blue')
+
+    if ctrl_rssi:
+        x, y = zip(*ctrl_rssi)
+        ax2.scatter(x, y, color='blue', marker='^', s=40, alpha=0.7)
+
+    if ctrl_lq:
+        x, y = zip(*ctrl_lq)
+        ax1.scatter(x, y, color='green', marker='v', s=60, alpha=0.7)
+
+    if telem_rssi:
+        ax3 = ax1.twinx()
+        ax3.spines.right.set_position(("axes", 1.12))
+        ax3.plot([], [], color='orange')
+        ax3.set_ylabel('Telemetry Radio RSSI (radio_status.rssi)', color='orange', fontsize=12)
+        ax3.yaxis.label.set_color('orange')
+        ax3.tick_params(axis='y', labelcolor='orange')
+
+        x, y = zip(*telem_rssi)
+        ax3.scatter(x, y, color='orange', marker='D', s=50, alpha=0.7)
+
+    ax1.set_xlabel('3D Distance from Home (meters)')
+    ax1.grid(True)
+    plt.title('PX4 Range vs Signal Strength', fontsize=14)
+    fig.tight_layout()
+
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+    plt.close()
+
+    return {'figure': f'<img src="data:image/png;base64,{image_base64}"/>'}
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Plot signal strength vs. range from PX4 .ulg logs")
     parser.add_argument("input_file", help="Path to PX4 .ulg log file")
-    parser.add_argument("--output", help="Path to save PNG plot (default: show in window)", default=None)
+    parser.add_argument("--output", help="Path to save PNG plot", default=None)
     parser.add_argument("--nogui", action="store_true", help="Suppress GUI display (useful for headless environments)")
 
     args = parser.parse_args()
@@ -122,21 +163,12 @@ def main():
         exit(1)
 
     if not (ctrl_rssi or ctrl_lq or telem_rssi):
-        print("No valid signal data found.")
+        print("❌ No valid signal data found in log.")
         exit(0)
 
     if args.output:
         import matplotlib
         matplotlib.use("Agg")
-        plot_scatter(ctrl_rssi, ctrl_lq, telem_rssi, str(path))
-        plt.savefig(args.output)
-        print(f"✅ Plot saved to {args.output}")
+        plot_scatter(ctrl_rssi, ctrl_lq, telem_rssi, args.output, suppress_gui=True)
     else:
-        plot_scatter(ctrl_rssi, ctrl_lq, telem_rssi, str(path))
-        if args.nogui:
-            print("✅ Plot generated (GUI suppressed)")
-        else:
-            plt.show()
-
-if __name__ == "__main__":
-    main()
+        plot_scatter(ctrl_rssi, ctrl_lq, telem_rssi, None, suppress_gui=args.nogui)
