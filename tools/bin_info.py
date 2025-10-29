@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import sys
 import pymavlink
@@ -50,3 +52,21 @@ def extract_bin_info(filepath):
     except Exception as e:
         return {'error': str(e)}
 
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Extract summary info from ArduPilot .bin log")
+    parser.add_argument("input_file", help="Path to .bin log file")
+    args = parser.parse_args()
+
+    result = extract_bin_info(args.input_file)
+
+    if 'error' in result:
+        print(f"❌ {result['error']}")
+    else:
+        print(f"📄 Log Summary for {result['filename']}")
+        print(f"Total Messages: {result['total_messages']}")
+        print(f"Log Duration: {result['log_duration']}")
+        print("Message Types:")
+        for msg_type in result['message_types']:
+            print(f"  - {msg_type}")
