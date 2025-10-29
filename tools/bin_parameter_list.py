@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 from pymavlink import mavutil
 
@@ -30,3 +32,18 @@ def extract_parameters(filepath):
     except Exception as e:
         return {'error': str(e)}
 
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Extract parameter list from ArduPilot .bin log")
+    parser.add_argument("input_file", help="Path to .bin log file")
+    args = parser.parse_args()
+
+    result = extract_parameters(args.input_file)
+
+    if 'error' in result:
+        print(f"❌ {result['error']}")
+    else:
+        print(f"📄 Parameters extracted from {os.path.basename(args.input_file)}:")
+        for key, value in result['parameters'].items():
+            print(f"  {key}: {value}")
