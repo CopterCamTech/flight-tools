@@ -1,11 +1,17 @@
+#!/usr/bin/env python3
+
 import matplotlib.pyplot as plt
 import numpy as np
 import io
 import base64
+import os
 from pyulog import ULog
 
-def generate_power_plot(filepath):
+def generate_power_plot(filepath, output_path=None):
     try:
+        if not os.path.exists(filepath):
+            return {'error': f"File not found: {filepath}"}
+
         # === Extract battery data from .ulg ===
         ulog = ULog(filepath)
         battery_data = ulog.get_dataset('battery_status')
@@ -45,15 +51,28 @@ def generate_power_plot(filepath):
         fig.tight_layout()
         ax1.grid(True)
 
-        # === Convert to base64 PNG ===
-        buf = io.BytesIO()
-        fig.savefig(buf, format='png')
-        buf.seek(0)
-        encoded = base64.b64encode(buf.read()).decode('utf-8')
-        html_img = f'<img src="data:image/png;base64,{encoded}"/>'
-
-        return {'figure': html_img}
+        if output_path:
+            fig.savefig(output_path)
+            plt.close()
+            return {'output': output_path}
+        else:
+            plt.show()
+            return {'output': 'Chart displayed interactively'}
 
     except Exception as e:
         return {'error': str(e)}
 
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Generate power chart from PX4 .ulg log")
+    parser.add_argument("input_file", help="Path to .ulg log file")
+    parser.add_argument("--output", help="Path to save PNG chart", default=None)
+    args = parser.parse_args()
+
+    result = generate_power_plot(args.input_file, args.output)
+
+    if 'error' in result:
+        print(f"❌ {result['error']}")
+    else:
+        print(f"✅ {result['output']}")

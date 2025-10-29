@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
@@ -5,7 +7,7 @@ from pymavlink import mavutil
 import numpy as np
 import os
 
-def generate_power_plot(filepath):
+def generate_power_plot(filepath, output_path=None):
     if not os.path.exists(filepath):
         return {'error': f"File not found: {filepath}"}
 
@@ -63,10 +65,25 @@ def generate_power_plot(filepath):
     plt.title('ArduPilot Power Metrics', fontsize=14)
     fig.tight_layout()  # Prevent clipping
 
-    buffer = BytesIO()
-    plt.savefig(buffer, format='png')
-    buffer.seek(0)
-    image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
-    plt.close()
+    if output_path:
+        plt.savefig(output_path)
+        plt.close()
+        return {'output': output_path}
+    else:
+        plt.show()
+        return {'output': 'Chart displayed interactively'}
 
-    return {'figure': f'<img src="data:image/png;base64,{image_base64}"/>'}
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Generate power chart from ArduPilot .bin log")
+    parser.add_argument("input_file", help="Path to .bin log file")
+    parser.add_argument("--output", help="Path to save PNG chart", default=None)
+    args = parser.parse_args()
+
+    result = generate_power_plot(args.input_file, args.output)
+
+    if 'error' in result:
+        print(f"❌ {result['error']}")
+    else:
+        print(f"✅ {result['output']}")
