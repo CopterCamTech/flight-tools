@@ -1,17 +1,23 @@
 ## ✈️ Flight-Tools: Modular UAV Log Analysis Suite
 
-**Flight-Tools** is a lightweight, modular diagnostic suite for analyzing UAV log files from ArduPilot (`.bin`) and PX4 (`.ulg`) systems. It’s designed for clarity, reproducibility, and community onboarding.
+**Flight-Tools** is a set of python scripts that report data from ArduPilot (`.bin`) and PX4 (`.ulg`) log files. The benefit of these scripts is speed and convenience.  Other tools can report the same log file data.  Each Flight-Tool script is single purpose - so they avoid the setup and configuration of other tools.
 
 ### 🔍 Features
-Power analysis and current draw visualization
 
-- Parameter listing and metadata extraction
+- Support for two ways to setup a python environment:
+  - `requirements.txt` for pip-based environment setup
+  - `pyproject.toml` compatible for UV environment setup
 
-- URI decoding and message inspection
+- Log file information reports
+  - Scripts that report the message types contained in PX4 and ArduPilot log files [![Thumbnail alt text](images/thumbnail_log_info_example.png)](images/log_info_example.png)
 
-- Modular architecture for easy extension
+  - Stripts that report on the parameters and their associated values in PX4 and ArduPilot log files [![Thumbnail alt text](images/thumbnail_parameters_example.png)](images/parameters_example.png)
 
-- Web-based interface for log upload and analysis
+  - A script to explore PX4 log files by user selection of message type, and field name under that message type - reporting on all values for that selection by timestamp. [![Thumbnail alt text](images/thumbnail_px4_semantic_log_explorer.png)](images/px4_semantic_log_explorer.png)
+
+- Support for headless and GUI script execution
+
+- Support for FLASK and web
 
 ---
 

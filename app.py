@@ -161,7 +161,13 @@ def ulg_range():
 @app.route('/ulg-explorer', methods=['GET', 'POST'])
 def ulg_explorer():
     if request.method == 'GET':
-        return render_template("ulg_explorer.html")
+        return render_template("ulg_explorer.html",
+                               filename=None,
+                               message_types=[],
+                               selected_msg_type=None,
+                               selected_field=None,
+                               fields=[],
+                               data=None)
 
     if "file" in request.files:
         file = request.files["file"]
@@ -175,6 +181,7 @@ def ulg_explorer():
                                filename=filename,
                                message_types=message_types,
                                selected_msg_type=None,
+                               selected_field=None,
                                fields=[],
                                data=None)
 
@@ -188,6 +195,7 @@ def ulg_explorer():
                                filename=None,
                                message_types=[],
                                selected_msg_type=None,
+                               selected_field=None,
                                fields=[],
                                data=None)
 
@@ -199,6 +207,7 @@ def ulg_explorer():
                                filename=filename,
                                message_types=[],
                                selected_msg_type=selected_msg_type,
+                               selected_field=None,
                                fields=fields,
                                data=None)
 
@@ -209,6 +218,7 @@ def ulg_explorer():
                                filename=filename,
                                message_types=[],
                                selected_msg_type=selected_msg_type,
+                               selected_field=selected_field,
                                fields=fields,
                                data=data)
 
@@ -216,6 +226,7 @@ def ulg_explorer():
                            filename=filename,
                            message_types=[],
                            selected_msg_type=None,
+                           selected_field=None,
                            fields=[],
                            data=None)
 
