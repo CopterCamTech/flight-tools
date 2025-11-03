@@ -1,0 +1,99 @@
+<h2>4. Execution Logic – CLI and Flask Modes</h2>
+<p>This section documents the two primary execution pathways in Flight-Tools: command-line interface (CLI) and Flask web interface. It defines consistent usage patterns, required files, and logic flow for each mode.</p>
+
+<h3>4.1 Command-Line Interface (CLI) Parameters</h3>
+<p>Scripts that support CLI mode follow a consistent pattern for argument parsing and execution. This enables standalone use and simplifies testing.</p>
+
+<h4>🧩 Standard CLI Structure</h4>
+<ul>
+  <li>Required argument: <code>input_file</code> – path to the log file</li>
+  <li>Optional flags (if applicable): <code>--verbose</code>, <code>--output</code>, etc.</li>
+  <li>Execution pattern: <code>python3 tools/script_name.py &lt;input_file&gt;</code></li>
+</ul>
+
+<h4>📋 CLI Parameter Table</h4>
+<table border="1" cellpadding="6" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Script Name</th>
+      <th>Required Args</th>
+      <th>Optional Flags</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>bin_info.py</code></td>
+      <td><code>input_file</code></td>
+      <td><code>--verbose</code> (planned)</td>
+      <td>Dual-mode</td>
+    </tr>
+    <tr>
+      <td><code>bin_parameter_list.py</code></td>
+      <td><code>input_file</code></td>
+      <td>None</td>
+      <td>Dual-mode</td>
+    </tr>
+    <tr>
+      <td><code>ulg_info.py</code></td>
+      <td><code>input_file</code></td>
+      <td>None</td>
+      <td>Dual-mode</td>
+    </tr>
+    <tr>
+      <td><code>web_only_tool.py</code></td>
+      <td>None</td>
+      <td>None</td>
+      <td>Flask-only; no CLI entry point</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>🚫 Scripts Without CLI Support</h4>
+<p>Some tools are designed exclusively for web use and do not support CLI mode. These omit <code>__main__</code> blocks and argument parsing.</p>
+
+<h3>4.2 Flask Logic Flow</h3>
+<p>Flask mode enables interactive web-based execution. Each tool is paired with a route and one or more templates to handle input and output.</p>
+
+<h4>🔁 Typical Flask Flow</h4>
+<ol>
+  <li>User accesses route (e.g. <code>/bin-info</code>)</li>
+  <li>Initial template rendered (file upload form)</li>
+  <li>File uploaded via POST</li>
+  <li>Flask route saves file and calls <code>generate_*</code> with <code>mode="flask"</code></li>
+  <li>Summary dictionary returned</li>
+  <li>Result template rendered with <code>summary</code> and <code>filename</code></li>
+</ol>
+
+<h4>📁 Required Files and Structure</h4>
+<ul>
+  <li><code>routes/bin_routes.py</code> – defines Flask route</li>
+  <li><code>tools/bin_info.py</code> – contains <code>generate_bin_info()</code></li>
+  <li><code>templates/bin_info.html</code> – input and result rendering</li>
+  <li><code>uploads/</code> – stores uploaded files</li>
+</ul>
+
+<h4>🧠 Summary Dictionary Schema</h4>
+<p>Each script returns a dictionary with consistent keys:</p>
+<ul>
+  <li><code>filename</code> – name of uploaded file</li>
+  <li><code>error</code> – error message (if any)</li>
+  <li><code>parameters</code>, <code>metadata</code>, etc. – script-specific results</li>
+</ul>
+
+<h4>🛠️ Error Handling and Fallbacks</h4>
+<ul>
+  <li>Missing file → render template with error message</li>
+  <li>Parsing failure → return <code>{'error': '...'}</code> in summary</li>
+  <li>Empty result → render template with fallback messaging</li>
+</ul>
+
+<h4>📌 Naming Conventions</h4>
+<ul>
+  <li>Route: <code>/bin-info</code> → Template: <code>bin_info.html</code></li>
+  <li>Route: <code>/ulg-info</code> → Template: <code>ulg_info.html</code></li>
+  <li>Function: <code>generate_bin_info()</code> → Called with <code>mode="flask"</code></li>
+</ul>
+
+<h4>✅ Summary</h4>
+<p>Flight-Tools supports dual-mode execution for most scripts. CLI mode uses consistent argument parsing, while Flask mode follows a predictable route-template-function flow. This structure ensures maintainability and simplifies future expansion.</p>

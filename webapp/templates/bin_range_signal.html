@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ArduPilot Range vs Signal</title>
+</head>
+<body>
+    <h1>ArduPilot Range vs Signal Strength</h1>
+
+    {% if not chart_data and not summary %}
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="logfile" accept=".BIN">
+            <input type="submit" value="Upload">
+        </form>
+    {% endif %}
+
+    {% if summary and summary.error %}
+        <p style="color: red;"><strong>Error:</strong> {{ summary.error }}</p>
+    {% endif %}
+
+    {% if chart_data %}
+        <p><strong>Filename:</strong> {{ filename }}</p>
+        <div>{{ chart_data|safe }}</div>
+    {% endif %}
+
+    <hr>
+    <a href="/bin-range-signal">Upload another file</a>
+</body>
+</html>

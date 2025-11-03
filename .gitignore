@@ -1,0 +1,31 @@
+# 🐍 Python artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# 📦 Virtual environments
+venv/
+.venv/
+
+# 📄 CLI-generated outputs
+*.txt
+*.log
+*.png
+
+# 🧪 Testing and analysis caches
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 🧠 Editor and system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 🔧 Flask uploads (temporary)
+webapp/uploads/
+

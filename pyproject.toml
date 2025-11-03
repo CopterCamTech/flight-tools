@@ -1,0 +1,23 @@
+[project]
+name = "flight-tools"
+version = "0.1.0"
+description = "UAV log analysis and charting tools"
+authors = [
+   { name = "Joe Stroup", email = "coptercamtech@gmail.com"}
+]
+dependencies = [
+  "flask>=2.2",
+  "flask-cors",
+  "flask-login",
+  "flask-wtf",
+  "flask-sqlalchemy",
+  "pandas",
+  "numpy",
+  "matplotlib",
+  "pyulog",
+  "pymavlink==2.4.49"
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"

@@ -1,0 +1,67 @@
+<h2>5. Script Integration Guide</h2>
+<p>This section provides a step-by-step guide for adding a new analysis script to Flight-Tools. It ensures consistency with the existing architecture and supports both CLI and Flask modes where applicable.</p>
+
+<h3>🧩 Step 1: Create the Script</h3>
+<ul>
+  <li>Place the new script in <code>tools/</code></li>
+  <li>Name it descriptively (e.g. <code>bin_altitude_profile.py</code>)</li>
+  <li>Include three key components:
+    <ul>
+      <li><code>extract_*()</code> – core logic that processes the log file</li>
+      <li><code>generate_*()</code> – wrapper that calls <code>extract_*</code> with <code>mode="cli"</code> or <code>"flask"</code></li>
+      <li><code>__main__</code> block – optional CLI entry point</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>🔁 Step 2: Add a Flask Route</h3>
+<ul>
+  <li>Edit <code>webapp/routes/bin_routes.py</code> or <code>ulg_routes.py</code> depending on log type</li>
+  <li>Define a new route:
+    <pre><code>@bin_bp.route('/bin-altitude-profile', methods=['GET', 'POST'])</code></pre>
+  </li>
+  <li>Handle GET and POST:
+    <ul>
+      <li>GET → render input form template</li>
+      <li>POST → save uploaded file, call <code>generate_*()</code>, render result template</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>🧱 Step 3: Create Templates</h3>
+<ul>
+  <li>Place templates in <code>webapp/templates/</code></li>
+  <li>Use consistent naming: <code>bin_altitude_profile.html</code></li>
+  <li>Include:
+    <ul>
+      <li>File upload form (for GET)</li>
+      <li>Result rendering block (for POST)</li>
+      <li>Fallback messaging for errors or empty results</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>📦 Step 4: Return a Summary Dictionary</h3>
+<ul>
+  <li>Ensure <code>generate_*()</code> returns a dictionary with:
+    <ul>
+      <li><code>filename</code></li>
+      <li><code>error</code> (if applicable)</li>
+      <li>Script-specific keys (e.g. <code>altitude_profile</code>)</li>
+    </ul>
+  </li>
+  <li>Templates should access these keys via <code>{{ summary.key }}</code></li>
+</ul>
+
+<h3>🚫 Step 5: Declare Flask-Only (if needed)</h3>
+<ul>
+  <li>If the script is not suitable for CLI mode:
+    <ul>
+      <li>Omit the <code>__main__</code> block</li>
+      <li>Document this in the CLI parameter table</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>✅ Summary</h3>
+<p>To integrate a new script into Flight-Tools, follow the dual-mode pattern: core logic in <code>extract_*</code>, wrapper in <code>generate_*</code>, route in <code>routes/</code>, and templates for input/output. This ensures consistency, maintainability, and future re-engagement.</p>

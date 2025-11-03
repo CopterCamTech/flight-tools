@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flight-Tools Directory Structure</title>
+</head>
+<body>
+  <h1>📁 Flight-Tools Directory Structure</h1>
+  <p>This document outlines the purpose of each major directory and highlights key files required for Flight-Tools to operate correctly—especially those that must be created manually for Flask integration.</p>
+
+  <h2>🔹 Root Directory: <code>flight-tools/</code></h2>
+  <ul>
+    <li><strong>README.md</strong> – Project overview and usage instructions (optional but recommended)</li>
+    <li><strong>requirements.txt</strong> – Python dependencies for CLI and Flask modes</li>
+    <li><strong>venv/</strong> – Python virtual environment (auto-generated; no need to document internal files)</li>
+    <li><strong>tools/</strong> – Core analysis scripts for CLI and Flask use</li>
+    <li><strong>webapp/</strong> – Flask application (routes, templates, static assets)</li>
+    <li><strong>docs/</strong> – Project documentation (e.g. this file, architecture notes)</li>
+  </ul>
+
+  <h2>🔹 <code>tools/</code> – Core Analysis Scripts</h2>
+  <p>This directory contains dual-mode scripts for parsing and analyzing log files.</p>
+  <ul>
+    <li><strong>bin_info.py</strong> – Extracts metadata from ArduPilot <code>.bin</code> logs</li>
+    <li><strong>bin_parameter_list.py</strong> – Extracts parameter values from <code>.bin</code> logs</li>
+    <li><strong>ulg_info.py</strong> – Extracts metadata from PX4 <code>.ulg</code> logs</li>
+    <li>Each script includes:
+      <ul>
+        <li><code>extract_*</code> – Core logic</li>
+        <li><code>generate_*</code> – Dual-mode wrapper</li>
+        <li><code>__main__</code> – CLI entry point</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2>🔹 <code>webapp/</code> – Flask Application</h2>
+  <p>This directory contains the Flask app structure. Key files must be present for Flask to operate correctly.</p>
+  <ul>
+    <li><strong>__init__.py</strong> – Required to make <code>webapp/</code> a Python package</li>
+    <li><strong>app.py</strong> – Flask entry point (e.g. <code>python3 -m webapp.app</code>)</li>
+    <li><strong>routes/</strong> – Route handlers for Flask endpoints</li>
+    <li><strong>templates/</strong> – HTML templates rendered by Flask</li>
+    <li><strong>static/</strong> – Optional static assets (CSS, JS, images)</li>
+    <li><strong>uploads/</strong> – Temporary storage for uploaded log files</li>
+  </ul>
+
+  <h2>🔹 <code>webapp/routes/</code> – Flask Route Handlers</h2>
+  <ul>
+    <li><strong>__init__.py</strong> – Required for route discovery</li>
+    <li><strong>bin_routes.py</strong> – Routes for ArduPilot <code>.bin</code> log tools</li>
+    <li><strong>ulg_routes.py</strong> – Routes for PX4 <code>.ulg</code> log tools</li>
+  </ul>
+
+  <h2>🔹 <code>webapp/templates/</code> – HTML Templates</h2>
+  <ul>
+    <li><strong>bin_info.html</strong> – Displays metadata from <code>.bin</code> logs</li>
+    <li><strong>bin_parameter_list.html</strong> – Displays parameters from <code>.bin</code> logs</li>
+    <li><strong>ulg_info.html</strong> – Displays metadata from <code>.ulg</code> logs</li>
+  </ul>
+
+  <h2>🔹 <code>webapp/uploads/</code> – Uploaded Log Storage</h2>
+  <p>Temporary storage for uploaded log files. Flask saves files here before parsing. Ensure this directory exists and is writable.</p>
+
+  <h2>🔹 <code>docs/</code> – Project Documentation</h2>
+  <ul>
+    <li><strong>flight-tools-doc-outline.html</strong> – Documentation structure and re-engagement guide</li>
+    <li>Other architecture notes, usage guides, and contributor references</li>
+  </ul>
+
+  <h2>🛠️ Required Files for Flask to Function</h2>
+  <ul>
+    <li><code>__init__.py</code> in both <code>webapp/</code> and <code>webapp/routes/</code></li>
+    <li><code>app.py</code> in <code>webapp/</code> to initialize and run the Flask app</li>
+    <li>Templates matching route render calls (e.g. <code>bin_info.html</code>)</li>
+    <li>Writable <code>uploads/</code> directory for file handling</li>
+  </ul>
+
+  <h2>✅ Summary</h2>
+  <p>The Flight-Tools directory is organized for clarity and reproducibility. Scripts are modular, Flask routes are separated by log type, and key files like <code>__init__.py</code> and <code>app.py</code> must be in place for the web interface to function. This structure supports dual-mode operation and long-term maintainability.</p>
+</body>
+</html>

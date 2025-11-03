@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PX4 Log Explorer</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1 { color: #2c3e50; }
+        select, input[type="submit"], input[type="file"] {
+            margin: 10px 0; padding: 8px; font-size: 16px;
+        }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .error { color: red; margin-top: 20px; }
+        .back-link { margin-top: 20px; display: block; }
+    </style>
+</head>
+<body>
+    <h1>PX4 Log Explorer</h1>
+
+    {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}</p>
+    {% endif %}
+
+    {% if not filename %}
+        <form method="post" enctype="multipart/form-data">
+            <label for="file">Upload a PX4 .ulg log file:</label><br>
+            <input type="file" name="file" accept=".ulg"><br>
+            <input type="submit" value="Upload">
+        </form>
+    {% elif not selected_type %}
+        <p><strong>Uploaded file:</strong> {{ filename }}</p>
+        <form method="post">
+            <input type="hidden" name="filename" value="{{ filename }}">
+            <label for="msg_type">Select Message Type:</label><br>
+            <select name="msg_type" id="msg_type">
+                {% for msg in message_types %}
+                    <option value="{{ msg }}">{{ msg }}</option>
+                {% endfor %}
+            </select><br>
+            <input type="submit" value="Next">
+        </form>
+        <a href="/ulg-log-explorer" class="back-link">Upload another file</a>
+    {% elif not selected_field %}
+        <p><strong>Uploaded file:</strong> {{ filename }}</p>
+        <form method="post">
+            <input type="hidden" name="filename" value="{{ filename }}">
+            <input type="hidden" name="msg_type" value="{{ selected_type }}">
+            <label for="field_name">Select Field from <strong>{{ selected_type }}</strong>:</label><br>
+            {% if fields %}
+                <select name="field_name" id="field_name">
+                    {% for entry in fields %}
+                        <option value="{{ entry['Field'] }}">{{ entry['Field'] }}</option>
+                    {% endfor %}
+                </select><br>
+                <input type="submit" value="View Data">
+            {% else %}
+                <p>No fields found for message type <strong>{{ selected_type }}</strong>.</p>
+            {% endif %}
+        </form>
+        <a href="/ulg-log-explorer" class="back-link">Upload another file</a>
+    {% else %}
+        <p><strong>Uploaded file:</strong> {{ filename }}</p>
+        <h2>Field Data for <strong>{{ selected_type }}</strong> → <strong>{{ selected_field }}</strong></h2>
+        {% if report_data %}
+            <table>
+                <tr><th>Timestamp</th><th>Value</th></tr>
+                {% for row in report_data %}
+                    <tr><td>{{ row[0] }}</td><td>{{ row[1] }}</td></tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No data found for selected field.</p>
+        {% endif %}
+        <a href="/ulg-log-explorer" class="back-link">Upload another file</a>
+    {% endif %}
+</body>
+</html>

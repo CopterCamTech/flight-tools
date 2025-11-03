@@ -1,0 +1,63 @@
+<h2>1. Re-engagement Guide (Primary)</h2>
+<p><strong>Purpose:</strong> This section is designed to help Joe resume development on Flight-Tools after a long lapse, and to re-engage Copilot with minimal friction. It outlines what to revisit, what to share, and how to restore architectural context quickly.</p>
+
+<h3>🧩 What to Share with Copilot</h3>
+<ul>
+  <li>Link to this documentation page</li>
+  <li>Current versions of key scripts (e.g. <code>bin_info.py</code>, <code>ulg_info.py</code>, <code>bin_parameter_list.py</code>)</li>
+  <li>Recent CLI and Flask output examples for both formats</li>
+  <li>Any new routes or templates added since last session</li>
+  <li>Notes on what was last working and what’s pending</li>
+</ul>
+
+<h3>🔁 Key Scripts to Revisit First</h3>
+<ul>
+  <li><strong>BIN format (ArduPilot):</strong>
+    <ul>
+      <li><code>bin_info.py</code> – baseline dual-mode structure</li>
+      <li><code>bin_parameter_list.py</code> – parameter extraction logic</li>
+      <li><code>bin_routes.py</code> – Flask route definitions</li>
+      <li><code>bin_info.html</code> and <code>bin_parameter_list.html</code> – template rendering</li>
+    </ul>
+  </li>
+  <li><strong>ULG format (PX4):</strong>
+    <ul>
+      <li><code>ulg_info.py</code> – baseline dual-mode structure</li>
+      <li><code>ulg_routes.py</code> – Flask route definitions</li>
+      <li><code>ulg_info.html</code> – template rendering</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>📂 Why BIN and ULG Are Separated</h3>
+<p>Flight-Tools supports two distinct UAV log formats:</p>
+<ul>
+  <li><strong>.bin (ArduPilot):</strong> parsed using <code>pymavlink</code></li>
+  <li><strong>.ulg (PX4):</strong> parsed using <code>pyulog</code></li>
+</ul>
+<p>Each format requires a different parser, message structure, and diagnostic strategy. To maintain clarity and reproducibility, Flight-Tools separates these workflows into parallel script sets and route handlers. This avoids conditional logic clutter and makes it easier to extend or debug each format independently.</p>
+
+<h3>🧪 How to Validate the Environment</h3>
+<ul>
+  <li>Run CLI mode: <code>python3 tools/bin_info.py &lt;logfile&gt;</code> or <code>python3 tools/ulg_info.py &lt;logfile&gt;</code></li>
+  <li>Run Flask mode: <code>python3 -m webapp.app</code> and test via browser</li>
+  <li>Confirm upload folder is writable and logs are saved correctly</li>
+  <li>Check Flask console for diagnostic prints (e.g. <code>📦 Returned summary:</code>)</li>
+</ul>
+
+<h3>📁 Directory Landmarks</h3>
+<ul>
+  <li><code>tools/</code> – core analysis scripts</li>
+  <li><code>webapp/routes/</code> – Flask route handlers</li>
+  <li><code>webapp/templates/</code> – HTML templates</li>
+  <li><code>webapp/static/</code> – CSS and assets (if needed)</li>
+  <li><code>webapp/uploads/</code> – temporary log storage</li>
+</ul>
+
+<h3>🧠 Tips for Re-engaging Copilot</h3>
+<ul>
+  <li>Share recent CLI output and Flask screenshots</li>
+  <li>Describe the last known working state and what broke</li>
+  <li>Ask for a clean version of any script you’re unsure about</li>
+  <li>Use phrases like “help me re-sync” or “remind me how this works”</li>
+</ul>

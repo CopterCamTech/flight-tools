@@ -1,0 +1,68 @@
+<h2>6. Flight-Tools Script Design Pattern</h2>
+<p>This section describes how Flight-Tools scripts are currently organized and integrated. It reflects the established architecture used across existing tools and provides a reference for maintaining consistency in future additions.</p>
+
+<h3>🧩 Core Structure</h3>
+<ul>
+  <li>Scripts reside in <code>tools/</code> and are modular</li>
+  <li>Each script supports either CLI mode, Flask mode, or both</li>
+  <li>Flask routes and templates follow a consistent naming convention</li>
+  <li>All outputs are returned as a summary dictionary with predictable keys</li>
+</ul>
+
+<h3>🔁 Dual-Mode Execution Pattern</h3>
+<p>Scripts that support both CLI and Flask modes typically include:</p>
+<ul>
+  <li><code>extract_*()</code> – the core logic function that processes the log file</li>
+  <li><code>generate_*()</code> – a wrapper function that dispatches based on mode</li>
+  <li><code>__main__</code> block – used for CLI entry point and argument parsing</li>
+</ul>
+
+<h3>🌐 Flask Integration</h3>
+<p>Flask routes are defined in <code>webapp/routes/bin_routes.py</code> or <code>ulg_routes.py</code>, depending on log type. Each route:</p>
+<ul>
+  <li>Handles both GET and POST requests</li>
+  <li>Renders an input form template on GET</li>
+  <li>Processes uploaded files and calls the corresponding <code>generate_*()</code> function on POST</li>
+  <li>Renders a result template using the returned summary dictionary</li>
+</ul>
+
+<h3>📁 Template Organization</h3>
+<ul>
+  <li>Templates are located in <code>webapp/templates/</code></li>
+  <li>Each template corresponds to a specific route and script</li>
+  <li>Templates include:
+    <ul>
+      <li>A file upload form for user input</li>
+      <li>A result block for displaying output</li>
+      <li>Fallback messaging for errors or empty results</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>📦 Summary Dictionary Format</h3>
+<p>Scripts return a dictionary with the following keys:</p>
+<ul>
+  <li><code>filename</code> – name of the uploaded file</li>
+  <li><code>error</code> – error message, if applicable</li>
+  <li>Additional keys specific to the script (e.g. <code>parameters</code>, <code>altitude_profile</code>)</li>
+</ul>
+<p>Templates access these values using Jinja syntax (e.g. <code>{{ summary.parameters }}</code>).</p>
+
+<h3>🧠 Naming Conventions</h3>
+<ul>
+  <li>Script: <code>bin_altitude_profile.py</code></li>
+  <li>Route: <code>/bin-altitude-profile</code></li>
+  <li>Template: <code>bin_altitude_profile.html</code></li>
+  <li>Wrapper function: <code>generate_bin_altitude_profile()</code></li>
+</ul>
+
+<h3>🚫 Flask-Only Tools</h3>
+<p>Some tools are designed exclusively for web use. These scripts:</p>
+<ul>
+  <li>Do not include a <code>__main__</code> block</li>
+  <li>Are not callable via CLI</li>
+  <li>Are documented accordingly in the CLI parameter table</li>
+</ul>
+
+<h3>✅ Summary</h3>
+<p>Flight-Tools scripts follow a consistent architectural pattern. By understanding how existing tools are structured—across scripts, routes, templates, and summary outputs—new tools can be added with minimal friction and full compatibility.</p>

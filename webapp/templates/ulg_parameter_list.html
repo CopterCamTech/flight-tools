@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PX4 Parameter List</title>
+</head>
+<body>
+    <h1>PX4 Parameter List</h1>
+
+    {% if not summary %}
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="logfile" accept=".ULG">
+            <input type="submit" value="Upload">
+        </form>
+    {% endif %}
+
+    {% if summary %}
+        {% if summary.error %}
+            <p style="color: red;"><strong>Error:</strong> {{ summary.error }}</p>
+        {% elif summary.parameters %}
+            <p><strong>Filename:</strong> {{ summary.filename }}</p>
+            <h2>Extracted Parameters</h2>
+            <table border="1" cellpadding="6" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Parameter Name</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for name, value in summary.parameters.items() %}
+                        <tr>
+                            <td>{{ name }}</td>
+                            <td>{{ value }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>⚠️ No parameters found in this log.</p>
+        {% endif %}
+    {% endif %}
+
+    <hr>
+    <a href="/ulg-parameter-list">Upload another file</a>
+</body>
+</html>

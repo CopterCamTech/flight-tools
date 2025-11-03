@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flight-Tools Template Structure</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Flight-Tools HTML Template Structure</h1>
+
+    <p>This document outlines the standard structure used in HTML templates for Flask-based tools in the Flight-Tools project. These templates are standalone files (not Jinja2 extensions) and follow a consistent pattern for clarity, maintainability, and contributor onboarding.</p>
+
+    <h2>Standard Template Layout</h2>
+    <p>Most tools follow this structure:</p>
+
+    <ol>
+        <li><strong>DOCTYPE and HTML Head</strong>
+            <ul>
+                <li>Includes <code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;html&gt;</code>, and <code>&lt;head&gt;</code> with a descriptive <code>&lt;title&gt;</code>.</li>
+            </ul>
+        </li>
+        <li><strong>Body Header</strong>
+            <ul>
+                <li>Tool-specific heading (e.g., <code>&lt;h1&gt;ArduPilot Parameter List&lt;/h1&gt;</code>).</li>
+            </ul>
+        </li>
+        <li><strong>Conditional Upload Form</strong>
+            <ul>
+                <li>Displayed only when no results are present.</li>
+                <li>Uses <code>method="post"</code> and <code>enctype="multipart/form-data"</code>.</li>
+                <li>Field name matches Flask route logic (e.g., <code>logfile</code> or <code>file</code>).</li>
+            </ul>
+        </li>
+        <li><strong>Result Block</strong>
+            <ul>
+                <li>Conditionally rendered using <code>{% if summary %}</code>.</li>
+                <li>Displays filename, error messages, or extracted data (usually in a table).</li>
+                <li>Fallback messaging for empty or invalid logs.</li>
+            </ul>
+        </li>
+        <li><strong>Navigation Footer</strong>
+            <ul>
+                <li>Always includes a link to restart the workflow (e.g., <code>Upload another file</code>).</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h2>Example Snippet</h2>
+    <pre><code>&lt;form method="post" enctype="multipart/form-data"&gt;
+    &lt;input type="file" name="logfile" accept=".BIN"&gt;
+    &lt;input type="submit" value="Upload"&gt;
+&lt;/form&gt;
+
+{% if summary %}
+    &lt;table&gt;...&lt;/table&gt;
+{% endif %}
+
+&lt;a href="/bin-parameter-list"&gt;Upload another file&lt;/a&gt;
+</code></pre>
+
+    <h2>Known Exceptions</h2>
+    <ul>
+        <li><strong>PX4 Semantic Explorer</strong>
+            <ul>
+                <li>Uses a two-step selection process (e.g., message type → field).</li>
+                <li>Template includes dynamic dropdowns and JavaScript-enhanced interactivity.</li>
+                <li>May require persistent form elements even after initial selection.</li>
+            </ul>
+        </li>
+        <li><strong>Future Tools</strong>
+            <ul>
+                <li>May include search boxes, filtering, or download links.</li>
+                <li>Should follow the same fallback and conditional rendering principles.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>Best Practices</h2>
+    <ul>
+        <li>Use semantic HTML for clarity and accessibility.</li>
+        <li>Match form field names to Flask route logic.</li>
+        <li>Always include fallback messaging for errors or empty results.</li>
+        <li>Keep templates modular and visually consistent across tools.</li>
+    </ul>
+
+    <hr>
+    <p>Maintained as part of the Flight-Tools documentation suite. Last updated: November 2025.</p>
+</body>
+</html>

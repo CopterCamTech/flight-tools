@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PX4 Range vs Signal Strength</title>
+</head>
+<body>
+    <h1>PX4 Range vs Signal Plot</h1>
+
+    {% if not chart_data %}
+        <form method="post" enctype="multipart/form-data">
+            <label for="file"><strong>Upload a .ULG file:</strong></label>
+            <input type="file" name="file" accept=".ULG">
+            <input type="submit" value="Upload">
+        </form>
+    {% endif %}
+
+    {% if filename and chart_data %}
+        <p><strong>File:</strong> {{ filename }}</p>
+        <div>
+            {{ chart_data|safe }}
+        </div>
+    {% elif filename and not chart_data %}
+        <p style="color: red;"><strong>Error:</strong> No signal data found or file not processed.</p>
+    {% endif %}
+
+    <hr>
+    <a href="/ulg-range-signal">Upload another file</a>
+</body>
+</html>
