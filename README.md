@@ -13,6 +13,11 @@ Flight-Tools is a modular toolkit for analyzing PX4 and ArduPilot flight logs. I
 - Clean chart rendering and summary tables
 - Designed for sustainable re-engagement and onboarding
 
+## 💡 Try the Live Version
+
+Live versions of all Flight-Tools scripts are available on the [www.coptercam.tech](https://www.coptercam.tech/flight-tools) website.
+You can explore log analysis, chart rendering, and route visualization directly in your browser—no setup required.
+
 ## 📁 Directory Structure
 
 ```bash
