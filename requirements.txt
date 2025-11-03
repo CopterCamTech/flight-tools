@@ -1,0 +1,10 @@
+flask>=2.2
+flask-cors
+flask-login
+flask-wtf
+flask-sqlalchemy
+pandas
+numpy
+matplotlib
+pyulog
+pymavlink==2.4.49
