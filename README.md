@@ -78,13 +78,13 @@ Most scripts in `tools/` support direct command-line execution. The only require
 
 ### Example: Text Summary
 
-# Print summary to console
+### Print summary to console
 
 ```bash
 python3 tools/bin_info.py path/to/log.bin
 ```
 
-# Save summary to file (auto-named as log.bin_info.txt)
+### Save summary to file (auto-named as log.bin_info.txt)
 
 ```bash
 python3 tools/bin_info.py path/to/log.bin --mode file
