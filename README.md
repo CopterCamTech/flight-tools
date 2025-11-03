@@ -1,5 +1,5 @@
 
-```markdown
+
 # Flight-Tools
 
 Flight-Tools is a modular toolkit for analyzing PX4 and ArduPilot flight logs. It supports both command-line and Flask-based web interfaces, with a focus on clarity, reproducibility, and contributor-friendly architecture.
@@ -14,7 +14,7 @@ Flight-Tools is a modular toolkit for analyzing PX4 and ArduPilot flight logs. I
 - Designed for sustainable re-engagement and onboarding
 
 ## 📁 Directory Structure
-```
+
 ```bash
 tools/                  # Python scripts for log analysis
 webapp/routes/          # Flask route definitions
@@ -22,11 +22,11 @@ webapp/templates/       # HTML templates for web interface
 webapp/uploads/         # Temporary storage for uploaded logs
 webapp/static/          # Optional static assets (CSS, JS, images)
 ```
-```markdown
+
 ## ⚙️ Quickstart
 
 ### Option 1: Using Python's built-in `venv`
-```
+
 ```bash
 # Clone the repo
 git clone https://github.com/your-username/flight-tools.git
@@ -42,9 +42,9 @@ pip install -r requirements.txt
 # Run Flask app
 python3 -m webapp.app
 ```
-```markdown
+
 ### Option 2: Using `uv` (ultra-fast Python package manager)
-```
+
 ```bash
 # Clone the repo
 git clone https://github.com/your-username/flight-tools.git
@@ -58,7 +58,7 @@ uv pip install -r requirements.txt
 # Run Flask app
 python3 -m webapp.app
 ```
-```markdown
+
 ## 🧪 CLI Usage
 
 Most scripts in `tools/` support direct command-line execution. The only required argument is the input log file. Optional parameters vary by script.
@@ -74,19 +74,19 @@ Most scripts in `tools/` support direct command-line execution. The only require
 ### Example: Text Summary
 
 # Print summary to console
-```
+
 ```bash
 python3 tools/bin_info.py path/to/log.bin
 ```
-```markdown
+
 # Save summary to file (auto-named as log.bin_info.txt)
-```
+
 ```bash
 python3 tools/bin_info.py path/to/log.bin --mode file
 ```
-```markdown
+
 ### Example: Chart Rendering
-```
+
 ```bash
 # Show chart in GUI environment
 python3 tools/bin_power_plot.py path/to/log.bin
@@ -94,7 +94,7 @@ python3 tools/bin_power_plot.py path/to/log.bin
 # Save chart to PNG in headless mode
 python3 tools/bin_power_plot.py path/to/log.bin --mode file
 ```
-```markdown
+
 > Note: Output filenames are auto-generated unless a script explicitly supports custom naming. GUI mode is assumed unless headless rendering is required.
 
 ## 🧠 Contributor Notes
@@ -110,6 +110,3 @@ python3 tools/bin_power_plot.py path/to/log.bin --mode file
 For detailed architecture, onboarding flow, and AI re-engagement tips, visit:
 
 👉 [Flight-Tools Documentation](https://www.coptercam.tech/flight-tools-documentation/)
-```
-
----
