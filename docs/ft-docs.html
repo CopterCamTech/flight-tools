@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flight-Tools Documentation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        h1, h2, h3 { color: #2c3e50; }
+        ul { margin-left: 20px; }
+        a { color: #2980b9; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .toc { background-color: #f9f9f9; padding: 20px; border: 1px solid #ccc; margin-bottom: 40px; }
+        .placeholder { background-color: #eee; padding: 10px; border: 1px dashed #aaa; margin: 20px 0; text-align: center; font-style: italic; }
+        .note { background-color: #ffffcc; padding: 10px; border-left: 4px solid #ffcc00; margin: 20px 0; }
+    </style>
+</head>
+<body>
+
+<h1>Flight-Tools Documentation</h1>
+
+<div class="note">
+    This documentation supports both human contributors and future AI sessions. It is designed for clarity, reproducibility, and sustainable engagement.
+</div>
+
+<h2>Table of Contents</h2>
+<div class="toc">
+    <ul>
+        <li><a href="#overview">Project Overview</a></li>
+        <li><a href="#directory-structure">Directory Structure</a></li>
+        <li><a href="#script-anatomy">Script Anatomy</a></li>
+        <li><a href="#flask-integration">Flask Integration</a></li>
+        <li><a href="#template-design">Template Design</a></li>
+        <li><a href="#adding-tools">Adding or Modifying Tools</a></li>
+        <li><a href="#deployment-notes">Deployment Notes</a></li>
+        <li><a href="#ai-reengagement">AI Re-engagement Tips</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+        <li><a href="#appendices">Appendices</a></li>
+    </ul>
+</div>
+
+<h2 id="overview">Project Overview</h2>
+<p>Flight-Tools is a modular toolkit for analyzing PX4 and ArduPilot logs. It supports both CLI and Flask modes, with a focus on contributor clarity and reproducibility.</p>
+
+<div class="placeholder">[Insert project diagram or logo here]</div>
+
+<h2 id="directory-structure">Directory Structure</h2>
+<p>The project is organized into logical subdirectories. Key folders include:</p>
+<ul>
+    <li><code>tools/</code> – Python scripts for log analysis</li>
+    <li><code>webapp/routes/</code> – Flask route definitions</li>
+    <li><code>webapp/templates/</code> – HTML templates for web interface</li>
+    <li><code>webapp/uploads/</code> – Temporary storage for uploaded log files</li>
+</ul>
+
+<div class="placeholder">[Insert visual directory tree from flight-tools-directory.txt]</div>
+
+<h2 id="script-anatomy">Script Anatomy</h2>
+<p>Each tool script follows a consistent structure:</p>
+<ul>
+    <li>Modular functions for parsing, extracting, and formatting data</li>
+    <li>Optional CLI entry point for standalone use</li>
+    <li>Flask entry point for web integration</li>
+</ul>
+
+<h2 id="flask-integration">Flask Integration</h2>
+<p>Flask routes are defined in <code>ulg_routes.py</code> and <code>bin_routes.py</code>. Each route:</p>
+<ul>
+    <li>Handles file upload and validation</li>
+    <li>Calls the appropriate tool function</li>
+    <li>Renders the result using a matching HTML template</li>
+</ul>
+
+<div class="placeholder">[Insert screenshot of Flask output or form interface]</div>
+
+<h2 id="template-design">Template Design</h2>
+<p>Templates use Jinja2 syntax and support:</p>
+<ul>
+    <li>Conditional rendering of charts, tables, and messages</li>
+    <li>Fallback messaging for missing data</li>
+    <li>Stateless re-entry for multi-step tools</li>
+</ul>
+
+<h2 id="adding-tools">Adding or Modifying Tools</h2>
+<p>To add a new tool:</p>
+<ol>
+    <li>Create a new script in <code>tools/</code> with modular functions</li>
+    <li>Add a route in <code>webapp/routes/</code></li>
+    <li>Create a matching template in <code>webapp/templates/</code></li>
+    <li>Test both CLI and Flask modes</li>
+</ol>
+
+<h2 id="deployment-notes">Deployment Notes</h2>
+<p>Flight-Tools runs on a Raspberry Pi with Python 3 and Flask. Key deployment notes:</p>
+<ul>
+    <li>Use virtualenv for isolation</li>
+    <li>Configure <code>UPLOAD_FOLDER</code> in <code>config.py</code></li>
+    <li>Consider adding a cron-based cleanup script for uploads</li>
+</ul>
+
+<h2 id="ai-reengagement">AI Re-engagement Tips</h2>
+<p>To re-engage Copilot or another AI assistant:</p>
+<ul>
+    <li>Share this documentation link</li>
+    <li>Describe the last working state</li>
+    <li>Ask for clean copies of scripts or templates</li>
+    <li>Use phrases like “remind me how this works” or “help me re-sync”</li>
+</ul>
+
+<h2 id="glossary">Glossary</h2>
+<ul>
+    <li><strong>Dual-mode</strong> – Supports both CLI and Flask execution</li>
+    <li><strong>Summary dictionary</strong> – A structured output used for rendering results</li>
+    <li><strong>Fallback messaging</strong> – Graceful handling of missing or invalid data</li>
+    <li><strong>Stateless route</strong> – Flask route that doesn’t rely on persistent session state</li>
+    <li><strong>Contributor clarity</strong> – Design principle focused on maintainability and onboarding</li>
+</ul>
+
+<h2 id="appendices">Appendices</h2>
+<ul>
+    <li><strong>Appendix A:</strong> Sample `.ulg` and `.bin` files</li>
+    <li><strong>Appendix B:</strong> Template snippets and reusable blocks</li>
+    <li><strong>Appendix C:</strong> Cleanup script architecture (planned)</li>
+</ul>
+
+<div class="placeholder">[Insert contributor credits or version history here]</div>
+
+</body>
+</html>
