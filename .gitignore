@@ -28,5 +28,7 @@ htmlcov/
 Thumbs.db
 
 # 🔧 Flask uploads (temporary)
-webapp/uploads/
+webapp/uploads/*
+!webapp/uploads/.gitkeep
+
 
