@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, current_app
 import os
 from werkzeug.utils import secure_filename
 
-from tools.ulg_power_plot import generate_power_plot
+from tools.ulg_power_plot import flask_entry as generate_power_plot
 from tools.ulg_info import generate_ulg_info
 from tools.ulg_parameter_list import generate_parameter_list
 from tools.ulg_range_signal import flask_entry as generate_range_signal
@@ -14,20 +14,33 @@ from tools.ulg_log_explorer import (
 
 ulg_bp = Blueprint('ulg_bp', __name__)
 
-@ulg_bp.route('/ulg-power', methods=['GET', 'POST'])
-def ulg_power():
+@ulg_bp.route('/ulg-power-plot', methods=['GET', 'POST'])
+def ulg_power_plot():
     chart_data = None
     filename = None
+    summary = None
+
     if request.method == 'POST':
         file = request.files.get('file')
-        if file and file.filename.lower().endswith('.ulg'):
+        if not file:
+            summary = {'error': 'No file uploaded.'}
+        elif not file.filename.lower().endswith('.ulg'):
+            summary = {'error': 'Invalid file type. Please upload a .ULG file.'}
+        else:
             filename = secure_filename(file.filename)
             upload_dir = current_app.config['UPLOAD_FOLDER']
             filepath = os.path.join(upload_dir, filename)
             file.save(filepath)
+
             result = generate_power_plot(filepath)
-            chart_data = result.get("image_data")
-    return render_template('ulg_power.html', chart_data=chart_data, filename=filename)
+            if 'error' in result:
+                summary = {'error': result['error']}
+            elif not result.get("image_data"):
+                summary = {'error': 'No chart data returned. Check log contents or parsing logic.'}
+            else:
+                chart_data = result["image_data"]
+
+    return render_template('ulg_power_plot.html', chart_data=chart_data, filename=filename, summary=summary)
 
 @ulg_bp.route('/ulg-info', methods=['GET', 'POST'])
 def ulg_info():
@@ -69,17 +82,21 @@ def ulg_range_signal():
     chart_data = None
     filename = None
     if request.method == 'POST':
-        file = request.files.get('file')
-        if file and file.filename.lower().endswith('.ulg'):
-            filename = secure_filename(file.filename)
-            upload_dir = current_app.config['UPLOAD_FOLDER']
-            filepath = os.path.join(upload_dir, filename)
-            file.save(filepath)
-            try:
-                result = generate_range_signal(filepath)
-                chart_data = result.get("image_data")
-            except Exception as e:
-                print(f"❌ Error in ulg_range_signal: {e}")
+        file = request.files.get('logfile')
+        if not file:
+            return render_template('ulg_range_signal.html', summary={'error': 'No file uploaded'})
+
+        filename = secure_filename(file.filename)
+        upload_dir = current_app.config['UPLOAD_FOLDER']
+        filepath = os.path.join(upload_dir, filename)
+        file.save(filepath)
+
+        result = generate_range_signal(filepath)
+        if 'error' in result:
+            return render_template('ulg_range_signal.html', summary={'error': result['error']})
+        else:
+            chart_data = result['figure']
+
     return render_template('ulg_range_signal.html', chart_data=chart_data, filename=filename)
 
 @ulg_bp.route('/ulg-log-explorer', methods=['GET', 'POST'])

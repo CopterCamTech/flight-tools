@@ -1,26 +1,16 @@
 #!/usr/bin/env python3
 
-# ✅ Enables CLI execution from tools/ by patching sys.path
-import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-# ✅ Use interactive backend for CLI, headless for Flask
-import matplotlib
-if __name__ == "__main__":
-    matplotlib.use('TkAgg')  # GUI backend for CLI
-else:
-    matplotlib.use('Agg')    # Headless backend for Flask
-
-import matplotlib.pyplot as plt
+import sys
+import argparse
+import subprocess
 import numpy as np
+import matplotlib.pyplot as plt
 from pyulog import ULog
-from webapp.utils.plot_utils import render_plot_to_base64  # ✅ Flask image rendering
+from io import BytesIO
+import base64
 
 def build_power_plot(filepath):
-    if not os.path.exists(filepath):
-        return None, f"File not found: {filepath}"
-
     try:
         ulog = ULog(filepath)
         battery_data = ulog.get_dataset('battery_status')
@@ -33,7 +23,6 @@ def build_power_plot(filepath):
             return None, "No battery telemetry found in log file."
 
         timestamps = (timestamps - timestamps[0]) / 1e6  # seconds
-
         power = voltage * current
         dt_hours = np.diff(timestamps) / 3600.0
         watt_hours = np.cumsum(power[:-1] * dt_hours)
@@ -55,7 +44,6 @@ def build_power_plot(filepath):
         ax3.spines.right.set_position(("axes", 1.1))
         ax3.plot(timestamps[1:], watt_hours, color='green', label='Watt-Hours (Wh)')
         ax3.set_ylabel('Watt-Hours (Wh)', color='green', fontsize=12)
-        ax3.yaxis.label.set_color('green')
         ax3.tick_params(axis='y', labelcolor='green')
 
         plt.title('PX4 Power Metrics', fontsize=14)
@@ -64,44 +52,92 @@ def build_power_plot(filepath):
         return fig, None
 
     except Exception as e:
-        return None, str(e)
+        return None, f"❌ Failed to parse .ulg file: {e}"
 
-def generate_power_plot(filepath, mode="cli", output_path=None):
-    fig, error = build_power_plot(filepath)
+def flask_entry(input_path):
+    import matplotlib
+    matplotlib.use("Agg")  # ✅ Use non-GUI backend for Flask
+
+    print("🧪 flask_entry() triggered")
+
+    if not os.path.exists(input_path):
+        return {'error': f"File not found: {input_path}"}
+
+    fig, error = build_power_plot(input_path)
     if error:
         return {'error': error}
 
-    if mode == "cli":
-        plt.figure(fig.number)
-        plt.show()
-        return {'output': 'Chart displayed interactively'}
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+    plt.close()  # ✅ Clean up figure after saving
 
-    elif mode == "file":
-        if not output_path:
-            output_path = filepath + "_power.png"
-        fig.savefig(output_path)
-        plt.close(fig)
-        return {'output': output_path}
+    result = {'image_data': image_base64}
+    print("[DEBUG] Chart image generated and encoded successfully.")
+    return result
 
-    elif mode == "flask":
-        image_data = render_plot_to_base64(fig)
-        plt.close(fig)
-        return {
-            'image_data': image_data,
-            'summary': 'Chart rendered in memory'
-        }
+def open_image(path):
+    try:
+        abs_path = os.path.abspath(path)
+        if sys.platform.startswith("darwin"):
+            subprocess.run(["open", abs_path])
+        elif os.name == "nt":
+            os.startfile(abs_path)
+        elif os.name == "posix":
+            subprocess.run(["xdg-open", abs_path])
+        print(f"[INFO] Opened image: {abs_path}")
+    except Exception as e:
+        print(f"[WARNING] Could not open image: {e}")
 
-    else:
-        plt.close(fig)
-        return {'error': f"Unknown mode: {mode}"}
+def get_temp_chart_path(logfile_path, script_name):
+    log_stem = os.path.splitext(os.path.basename(logfile_path))[0]
+    script_stem = os.path.splitext(os.path.basename(script_name))[0]
+    filename = f"{log_stem}-{script_stem}.png"
+    return os.path.abspath(os.path.join("webapp", "uploads", filename))
+
+def validate_input_file(path_str):
+    path = os.path.abspath(path_str)
+    if not os.path.exists(path):
+        return None, f"❌ Error: File '{path}' does not exist."
+    if not path.lower().endswith(".ulg"):
+        return None, f"❌ Error: Expected a .ulg file, but got '{os.path.splitext(path)[1]}'"
+    return path, None
 
 if __name__ == "__main__":
-    import argparse
+    import matplotlib
+    matplotlib.use("Agg")  # ✅ Use non-GUI backend for CLI mode
+
     parser = argparse.ArgumentParser(description="Generate power chart from PX4 .ulg log")
-    parser.add_argument("input_file", help="Path to .ulg log file")
-    parser.add_argument("--mode", choices=["cli", "file", "flask"], default="cli")
-    parser.add_argument("--output", help="Path to save PNG chart (used in file mode)", default=None)
+    parser.add_argument("input_file", help="Path to PX4 .ulg log file")
+    parser.add_argument("--output", help="Path to save PNG chart")
+    parser.add_argument("--nogui", action="store_true", help="Suppress GUI display")
+    parser.add_argument("--view", action="store_true", help="Open chart after saving")
     args = parser.parse_args()
 
-    result = generate_power_plot(args.input_file, mode=args.mode, output_path=args.output)
-    print(result.get('error') or f"✅ {result['output']}")
+    path, error = validate_input_file(args.input_file)
+    if error:
+        print(error)
+        exit(1)
+
+    fig, error = build_power_plot(path)
+    if error:
+        print(error)
+        exit(1)
+
+    if args.output:
+        output_path = os.path.abspath(args.output)
+        if not output_path.lower().endswith(".png"):
+            output_path += ".png"
+    elif args.nogui:
+        print("❌ Headless mode requires --output to save chart.")
+        exit(1)
+    else:
+        output_path = get_temp_chart_path(args.input_file, __file__)
+
+    fig.savefig(output_path)
+    print(f"✅ Chart saved to: {output_path}")
+    plt.close()  # ✅ Clean up figure after saving
+
+    if not args.nogui and (not args.output or args.view):
+        open_image(output_path)

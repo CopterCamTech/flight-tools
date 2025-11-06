@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 from tools.bin_info import generate_bin_info
 from tools.bin_parameter_list import generate_parameter_list
 from tools.bin_range_signal import flask_entry as generate_range_chart
-from tools.bin_power_plot import generate_power_plot  # ✅ Added for power plot
+from tools.bin_power_plot import flask_entry as generate_power_plot
 
 bin_bp = Blueprint('bin_bp', __name__)
 
@@ -63,17 +63,26 @@ def bin_range_signal():
 
     return render_template('bin_range_signal.html', chart_data=chart_data, filename=filename)
 
-@bin_bp.route('/bin-power', methods=['GET', 'POST'])
-def bin_power():
+@bin_bp.route('/bin-power-plot', methods=['GET', 'POST'])
+def bin_power_plot():
     chart_data = None
     filename = None
     if request.method == 'POST':
-        file = request.files.get('file')
-        if file and file.filename.lower().endswith('.bin'):
-            filename = secure_filename(file.filename)
-            upload_dir = current_app.config['UPLOAD_FOLDER']
-            filepath = os.path.join(upload_dir, filename)
-            file.save(filepath)
-            result = generate_power_plot(filepath, mode="flask")
-            chart_data = result.get("image_data")
-    return render_template('bin_power.html', chart_data=chart_data, filename=filename)
+        file = request.files.get('logfile')
+        if not file:
+            return render_template('bin_power_plot.html', summary={'error': 'No file uploaded'})
+
+        filename = secure_filename(file.filename)
+        upload_dir = current_app.config['UPLOAD_FOLDER']
+        filepath = os.path.join(upload_dir, filename)
+        file.save(filepath)
+
+        result = generate_power_plot(filepath)
+        if 'error' in result:
+            return render_template('bin_power_plot.html', summary={'error': result['error']})
+        else:
+            chart_data = result['image_data']
+
+    # ✅ Always return the template, even for GET
+    return render_template('bin_power_plot.html', chart_data=chart_data, filename=filename)
+

@@ -8,8 +8,8 @@
 
     {% if not chart_data and not summary %}
         <form method="post" enctype="multipart/form-data">
-            <label for="file"><strong>Upload a .BIN file:</strong></label>
-            <input type="file" name="file" accept=".BIN">
+            <label for="logfile"><strong>Upload a .BIN file:</strong></label>
+            <input type="file" name="logfile" accept=".BIN">
             <input type="submit" value="Upload">
         </form>
     {% endif %}
@@ -21,10 +21,10 @@
     {% if chart_data %}
         <p><strong>Filename:</strong> {{ filename }}</p>
         <h2>Power Chart</h2>
-        <img src="{{ chart_data }}" alt="Power Chart">
+        <img src="data:image/png;base64,{{ chart_data }}" alt="Power Chart">
     {% endif %}
 
     <hr>
-    <a href="/bin-power">Upload another file</a>
+    <a href="/bin-power-plot">Upload another file</a>
 </body>
 </html>

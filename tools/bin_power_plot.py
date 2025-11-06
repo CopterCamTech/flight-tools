@@ -1,23 +1,16 @@
 #!/usr/bin/env python3
 
-# ✅ Enables CLI execution from tools/ by patching sys.path
-import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-# ✅ Use interactive backend for CLI, headless for Flask
-import matplotlib
-if __name__ == "__main__":
-    matplotlib.use('TkAgg')  # GUI backend for CLI
-else:
-    matplotlib.use('Agg')    # Headless backend for Flask
-
-import matplotlib.pyplot as plt  # ✅ Now available in all modes
+import sys
+import argparse
+import base64
+import subprocess
+from io import BytesIO
+import matplotlib.pyplot as plt
 import numpy as np
 from pymavlink import mavutil
-from webapp.utils.plot_utils import render_plot_to_base64
 
-def build_power_plot(filepath):
+def extract_power_data(filepath):
     reader = mavutil.mavlink_connection(filepath)
     timestamps = []
     current_data = []
@@ -39,8 +32,11 @@ def build_power_plot(filepath):
             voltage_data.append(volt)
 
     if not timestamps:
-        return None, 'No battery telemetry found in log file.'
+        return None, None, None, 'No battery telemetry found in log file.'
 
+    return timestamps, current_data, voltage_data, None
+
+def generate_power_chart(timestamps, current_data, voltage_data):
     power = np.array(current_data) * np.array(voltage_data)
     time_deltas = np.diff(timestamps, prepend=timestamps[0])
     watt_sec = np.cumsum(power * time_deltas)
@@ -68,48 +64,97 @@ def build_power_plot(filepath):
 
     plt.title('ArduPilot Power Metrics', fontsize=14)
     fig.tight_layout()
+    return fig
 
-    return fig, None
+def open_image(path):
+    try:
+        abs_path = os.path.abspath(path)
+        if sys.platform.startswith("darwin"):
+            subprocess.run(["open", abs_path])
+        elif os.name == "nt":
+            os.startfile(abs_path)
+        elif os.name == "posix":
+            subprocess.run(["xdg-open", abs_path])
+        print(f"[INFO] Opened image: {abs_path}")
+    except Exception as e:
+        print(f"[WARNING] Could not open image: {e}")
 
-def generate_power_plot(filepath, mode="cli", output_path=None):
-    if not os.path.exists(filepath):
-        return {'error': f"File not found: {filepath}"}
+def get_temp_chart_path(logfile_path, script_name):
+    log_stem = os.path.splitext(os.path.basename(logfile_path))[0]
+    script_stem = os.path.splitext(os.path.basename(script_name))[0]
+    filename = f"{log_stem}-{script_stem}.png"
+    return os.path.abspath(os.path.join("webapp", "uploads", filename))
 
-    fig, error = build_power_plot(filepath)
+def validate_input_file(path_str):
+    if not os.path.exists(path_str):
+        return None, f"❌ Error: File '{path_str}' does not exist."
+    if not path_str.lower().endswith(".bin"):
+        return None, f"❌ Error: Expected a .bin file, but got '{os.path.splitext(path_str)[1]}'"
+    return path_str, None
+
+def flask_entry(input_path):
+    import matplotlib
+    matplotlib.use("Agg")  # ✅ Use non-GUI backend for Flask
+
+    path, error = validate_input_file(input_path)
     if error:
         return {'error': error}
 
-    if mode == "cli":
-        plt.figure(fig.number)  # 👈 Precise figure selection
-        plt.show()              # 👈 Blocks until chart is closed
-        return {'output': 'Chart displayed interactively'}
+    timestamps, current_data, voltage_data, parse_error = extract_power_data(path)
+    if parse_error:
+        return {'error': parse_error}
+    if not (timestamps and current_data and voltage_data):
+        return {'error': 'No valid power data found in log file.'}
 
-    elif mode == "file":
-        if not output_path:
-            output_path = filepath + "_power.png"
-        fig.savefig(output_path)
-        plt.close(fig)
-        return {'output': output_path}
-
-    elif mode == "flask":
-        image_data = render_plot_to_base64(fig)
-        plt.close(fig)
-        return {
-            'image_data': image_data,
-            'summary': 'Chart rendered in memory'
-        }
-
-    else:
-        plt.close(fig)
-        return {'error': f"Unknown mode: {mode}"}
+    fig = generate_power_chart(timestamps, current_data, voltage_data)
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+    plt.close()  # ✅ Clean up figure after saving
+    print("[DEBUG] Power chart image generated and encoded successfully.")
+    return {'image_data': image_base64}
 
 if __name__ == "__main__":
-    import argparse
-    parser = argparse.ArgumentParser(description="Generate power chart from ArduPilot .bin log")
+    import matplotlib
+    matplotlib.use("Agg")  # ✅ Use non-GUI backend for CLI mode
+
+    parser = argparse.ArgumentParser(description="Plot power metrics from ArduPilot .bin log")
     parser.add_argument("input_file", help="Path to .bin log file")
-    parser.add_argument("--mode", choices=["cli", "file", "flask"], default="cli")
-    parser.add_argument("--output", help="Path to save PNG chart (used in file mode)", default=None)
+    parser.add_argument("--output", help="Path to save PNG chart")
+    parser.add_argument("--nogui", action="store_true", help="Suppress GUI display")
+    parser.add_argument("--view", action="store_true", help="Open chart after saving")
     args = parser.parse_args()
 
-    result = generate_power_plot(args.input_file, mode=args.mode, output_path=args.output)
-    print(result.get('error') or f"✅ {result['output']}")
+    path, error = validate_input_file(args.input_file)
+    if error:
+        print(error)
+        exit(1)
+
+    timestamps, current_data, voltage_data, parse_error = extract_power_data(path)
+    if parse_error:
+        print(parse_error)
+        exit(1)
+    if not (timestamps and current_data and voltage_data):
+        print("❌ No valid power data found in log.")
+        exit(0)
+
+    fig = generate_power_chart(timestamps, current_data, voltage_data)
+
+    if args.output:
+        output_path = args.output
+        if not output_path.lower().endswith(".png"):
+            output_path += ".png"
+        output_path = os.path.abspath(output_path)
+    elif args.nogui:
+        print("❌ Headless mode requires --output to save chart.")
+        exit(1)
+    else:
+        output_path = get_temp_chart_path(args.input_file, __file__)
+
+    fig.savefig(output_path)
+    print(f"✅ Chart saved to: {output_path}")
+    plt.close()  # ✅ Clean up figure after saving
+
+    if not args.nogui and (not args.output or args.view):
+        open_image(output_path)

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PX4 Power Metrics</title>
+</head>
+<body>
+    <h1>PX4 Power Metrics</h1>
+
+    {% if not chart_data and not summary %}
+        <form method="post" enctype="multipart/form-data">
+            <label for="file"><strong>Upload a .ULG file:</strong></label>
+            <input type="file" name="file" accept=".ULG">
+            <input type="submit" value="Upload">
+        </form>
+    {% endif %}
+
+    {% if summary and summary.error %}
+        <p style="color: red;"><strong>Error:</strong> {{ summary.error }}</p>
+    {% endif %}
+
+    {% if chart_data %}
+        <p><strong>Filename:</strong> {{ filename }}</p>
+        <h2>Power Chart</h2>
+        <img src="data:image/png;base64,{{ chart_data }}" alt="Power Chart">
+    {% elif filename and not chart_data %}
+        <p style="color: red;"><strong>Error:</strong> No chart data returned for {{ filename }}.</p>
+    {% endif %}
+
+    <hr>
+    <a href="/ulg-power-plot">Upload another file</a>
+</body>
+</html>
