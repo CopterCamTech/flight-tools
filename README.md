@@ -37,7 +37,7 @@ You can explore log analysis, chart rendering, and route visualization directly 
 ```bash
 flight-tools/                       # Flight-tools python project root
 flight-tools/tools/                 # Python scripts for log analysis
-fligt-tools/webapp/routes/          # Flask route definitions
+flight-tools/webapp/routes/         # Flask route definitions
 flight-tools/webapp/templates/      # HTML templates for web interface
 flight-tools/webapp/uploads/        # Temporary storage for uploaded logs and created chart .png files
 ```
