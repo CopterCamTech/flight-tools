@@ -12,6 +12,7 @@ With some notable exceptions, Flight-Tools scripts report log file data that can
   - Headless using commands and parameters
     - Text output presented to the terminal
     - Graphic output saved as .PNG files
+    - Graphic output automatically displayed where associated apps for .PNG display exist
   - GUI using web browsers
     - Local GUI operation uses FLASK
     - Remote GUI operation uses FLASK, but a reverse proxy web server is recommended
