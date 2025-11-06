@@ -2,30 +2,43 @@
 
 # Flight-Tools
 
-Flight-Tools is a modular toolkit for analyzing PX4 and ArduPilot flight logs. It supports both command-line and Flask-based web interfaces, with a focus on clarity, reproducibility, and contributor-friendly architecture.
+Flight-Tools is a modular toolkit of programs for analyzing PX4 and ArduPilot flight logs.  All code is Python and HTML.
+
+With some notable exceptions, Flight-Tools scripts report log file data that can be obtained with other tools.  The advantage of Flight-Tools scripts is that they are pre-written and don't require setup or configuration.
 
 ## 🚀 Features
 
-- Dual-mode execution (CLI + Flask)
-- Modular scripts for `.ulg` and `.bin` log formats
-- Dynamic web interface with multi-step tools
-- Stateless Flask routes and fallback messaging
-- Clean chart rendering and summary tables
-- Designed for sustainable re-engagement and onboarding
+### Mulitple environment support:
+  - Headless using commands and parameters
+    - Text output presented to the terminal
+    - Graphic output saved as .PNG files
+  - GUI using web browsers
+    - Local GUI operation uses FLASK
+    - Remote GUI operation uses FLASK, but a reverse proxy web server is recommended
+  - Linux and Windows compatibility
+
+### PX4 and ArduPilot support:
+  - Scripts are coded for either PX4 or ArduPilot log files
+  - Most scripts have similar versions for PX4 and ArduPilot log files
+
+### Support for both PIP and UV python package managers
+  - `REQUIREMENTS.TXT` support both PIP and UV
+  - `PYPROJECT.TOML` supports UV
+
 
 ## 💡 Try the Live Version
 
-Live versions of all Flight-Tools scripts are available on the [www.coptercam.tech](https://www.coptercam.tech/flight-tools) website.
+Live versions of most Flight-Tools scripts are available on the [www.coptercam.tech](https://www.coptercam.tech/flight-tools) website.
 You can explore log analysis, chart rendering, and route visualization directly in your browser—no setup required.
 
 ## 📁 Directory Structure
 
 ```bash
-tools/                  # Python scripts for log analysis
-webapp/routes/          # Flask route definitions
-webapp/templates/       # HTML templates for web interface
-webapp/uploads/         # Temporary storage for uploaded logs
-webapp/static/          # Optional static assets (CSS, JS, images)
+flight-tools/                       # Flight-tools python project root
+flight-tools/tools/                 # Python scripts for log analysis
+fligt-tools/webapp/routes/          # Flask route definitions
+flight-tools/webapp/templates/      # HTML templates for web interface
+flight-tools/webapp/uploads/        # Temporary storage for uploaded logs and created chart .png files
 ```
 
 ## ⚙️ Quickstart
