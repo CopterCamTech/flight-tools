@@ -2,9 +2,11 @@
 
 # Flight-Tools
 
-Flight-Tools is a modular toolkit of programs for analyzing PX4 and ArduPilot flight logs.  All code is Python and HTML.
+Flight-Tools is a modular toolkit of programs for analyzing PX4 and ArduPilot flight logs.  All code is Python or HTML.
 
-With some notable exceptions, Flight-Tools scripts report log file data that can be obtained with other tools.  The advantage of Flight-Tools scripts is that they are pre-written and don't require setup or configuration.
+With some exceptions, data reported by Flight-Tools scripts can be obtained with other tools.  The advantage of Flight-Tools scripts is that they are pre-written and don't require setup or configuration.
+
+I have plans to write Windows executable versions of the scripts in Rust - which will eliminate the need for a python environment.
 
 ## 🚀 Features
 
@@ -31,6 +33,12 @@ With some notable exceptions, Flight-Tools scripts report log file data that can
 
 Live versions of most Flight-Tools scripts are available on the [www.coptercam.tech](https://www.coptercam.tech/flight-tools) website.
 You can explore log analysis, chart rendering, and route visualization directly in your browser—no setup required.
+
+##   Dependencies and Requirements
+
+###     Python
+          - Familiarity using Python scripts and Python virtual environments
+          - Python 3.10 or later recommended
 
 ## 📁 Directory Structure
 
