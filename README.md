@@ -2,15 +2,15 @@
 
 # Flight-Tools
 
-Flight-Tools is a modular toolkit of programs for analyzing PX4 and ArduPilot flight logs.  All code is Python or HTML.
+Flight-Tools is a modular toolkit of programs for analyzing PX4 and ArduPilot flight logs.  All code is Python scripts or HTML documents.
 
-With some exceptions, data reported by Flight-Tools scripts can be obtained with other tools.  The advantage of Flight-Tools scripts is that they are pre-written and don't require setup or configuration.
+With few exceptions, data reported by Flight-Tools scripts can be obtained with other tools.  An advantage of Flight-Tools scripts is that they are single purpose, pre-written and don't require setup or configuration.  Another advantage is that Flight-Tools is cross platform with Linux and Windows support.
 
-I have future plans to write Windows executable versions of these scripts in Rust - which will eliminate the need for a python environment.
+I have future plans to write Windows executable versions of these scripts - which will eliminate the need for a python environment.
 
 ## 🚀 Features
 
-### Mulitple environments:
+### Mulitple operating environments:
   - **Headless** using commands and parameters (CLI Mode)
     - Text output presented to the terminal
     - Graphic output saved as .PNG files
@@ -21,7 +21,7 @@ I have future plans to write Windows executable versions of these scripts in Rus
   - **Linux** and **Windows** compatibility
 
 ### PX4 and ArduPilot support:
-  - Scripts are coded individually for either PX4 and ArduPilot log files
+  - Scripts are coded individually for PX4 and ArduPilot log files
   - Scripts generate similar output for PX4 and ArduPilot log files
 
 ### Support for both PIP and UV python package managers
@@ -49,7 +49,7 @@ flight-tools/webapp/templates/      # HTML templates for web interface
 flight-tools/webapp/uploads/        # Temporary storage for uploaded logs and created chart .png files
 ```
 
-## 👉 Scripts in `flight-tools/tools`
+## 👉 Python scripts in `flight-tools/tools`
 
 | Script Name | Log Type | Mode | Description |
 |---|---|---|---|
@@ -77,7 +77,7 @@ The `flight-tools` Python scripts are in the `flight-tools/tools` directory.  Th
 ```
 ## 👉 FLASK MODE (GUI) Requirements and Syntax
 
-FLASK is a micro web server for python scripts.  When FLASK is enabled, python scripts are available on a local web browser using `http://localhost:5000`  (port 5000 is a default - and can be changed)
+FLASK is a micro web server for python scripts.  When FLASK is enabled, python scripts are available on a local web browser using `http://localhost:5000`  (port 5000 is a FLASK default - and can be changed)
 
 A python virtual environment must be active to run FLASK.
 
@@ -85,10 +85,22 @@ A suitable python virtual environment can be created using the `flight-tools/req
 
 Web requests to a FLASK web server are routed to the appropriate script by supporting scripts in the `flight-tools/webapp/routes` directory.  This routing uses special web address to get to the appropriate Flight-Tools python script.
 
-### To start FLASK:
+### To activate a Python virtual environment
+
+| **Linux** | **Windows** |
+|---|---|
+| `source .venv/bin/activate` | `.venv\Scripts\activate` |
+
+### To start FLASK (Linux):
 ```bash
-(venv) user@host:~/flight-tools$ Python3 -m webapp.app
+(venv) user@host:~/flight-tools$ python3 -m webapp.app
 ```
+
+### To start FLASK (Windows):
+```bash
+(venv) C:/flight-tools$ python -m webapp.app
+```
+
 ### FLASK web addresses
 
 | Flight-Tools Script Name | FLASK web address |
@@ -102,13 +114,13 @@ Web requests to a FLASK web server are routed to the appropriate script by suppo
 | `ulg_power_plot.py` | `http://localhost:5000/ulg-power-plot` |
 | `ulg_log_explorer.py` | `http://localhost:5000/ulg-log-explorer` |
 
-## ⚙️ Quickstart
+## ⚙️ Quickstart - Cloneing the Repo - Creating and Activating Python Virtual Environment - Starting FLASK
 
 ### Option 1: Using Python's built-in `venv`
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/flight-tools.git
+git clone https://github.com/coptercamtech/flight-tools.git
 cd flight-tools
 
 # Create and activate virtual environment
@@ -118,15 +130,18 @@ source venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Run Flask app
+# Run Flask app (Linux)
 python3 -m webapp.app
+
+# Run Flask app (Windows)
+python -m webapp.app
 ```
 
 ### Option 2: Using `uv` (ultra-fast Python package manager)
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/flight-tools.git
+git clone https://github.com/coptercamtech/flight-tools.git
 cd flight-tools
 
 # Create environment and install dependencies
@@ -134,13 +149,26 @@ uv venv
 source .venv/bin/activate
 uv pip install -r requirements.txt
 
-# Run Flask app
+# Run Flask app (Linux)
 python3 -m webapp.app
+
+# Run Flask app (Windows)
+python -m webapp.app
 ```
 
 ## 🧪 CLI Parameters
 
-Most scripts in `tools/` support direct command-line execution. The only required argument is the input log file. Optional parameters vary by script.
+Most scripts in `tools/` support direct command-line execution. (Presently only `ulg_log_log_explorer.py` must be run in FLASK mode)
+
+Scripts that generate text output will generate the output on the terminal.
+
+Scripts that generate graphics/charts will create a `.PNG` file.  On a workstation with windows support, the output file will be opened with the app associated with `.PNG` file type.
+
+In a headless or non-graphic workstation environment, the output graphic/chart can be saved to a filename specified by a script parameter.
+
+Output files are saved in the flight-tools/uploads directory.
+
+By default, the output is automatically displayed - no parameters are required to dispaly output.
 
 ### Common Parameters
 
