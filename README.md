@@ -89,7 +89,7 @@ Web requests to a FLASK web server are routed to the appropriate script by suppo
 
 | **Linux** | **Windows** |
 |---|---|
-| `source .venv/bin/activate` | `.venv\Scripts\activate` |
+| `source venv/bin/activate` | `venv\Scripts\activate` |
 
 ### To start FLASK (Linux):
 ```bash
@@ -146,7 +146,7 @@ cd flight-tools
 
 # Create environment and install dependencies
 uv venv
-source .venv/bin/activate
+source venv/bin/activate
 uv pip install -r requirements.txt
 
 # Run Flask app (Linux)
