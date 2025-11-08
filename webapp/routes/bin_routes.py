@@ -5,6 +5,7 @@ from tools.bin_info import generate_bin_info
 from tools.bin_parameter_list import generate_parameter_list
 from tools.bin_range_signal import flask_entry as generate_range_chart
 from tools.bin_power_plot import flask_entry as generate_power_plot
+from tools.bin_log_explorer import (parse_bin_file, get_fields_from_bin, extract_field_data_bin)
 
 bin_bp = Blueprint('bin_bp', __name__)
 
@@ -86,3 +87,53 @@ def bin_power_plot():
     # ✅ Always return the template, even for GET
     return render_template('bin_power_plot.html', chart_data=chart_data, filename=filename)
 
+@bin_bp.route('/bin-log-explorer', methods=['GET', 'POST'])
+def bin_log_explorer():
+    upload_dir = current_app.config['UPLOAD_FOLDER']
+    filename = None
+    selected_type = None
+    selected_field = None
+    message_types = []
+    fields = []
+    report_data = []
+
+    if request.method == 'POST':
+        filename = request.form.get('filename')
+        msg_type = request.form.get('msg_type')
+        field_name = request.form.get('field_name')
+
+        # Step 1: File upload
+        if not filename:
+            file = request.files.get('file')
+            if file and file.filename.lower().endswith('.bin'):
+                filename = secure_filename(file.filename)
+                filepath = os.path.join(upload_dir, filename)
+                file.save(filepath)
+                message_types, _ = parse_bin_file(filepath)
+                return render_template('bin_log_explorer.html',
+                                       filename=filename,
+                                       message_types=message_types)
+
+        # Step 2: Message type selected
+        elif filename and msg_type and not field_name:
+            filepath = os.path.join(upload_dir, filename)
+            _, messages_by_type = parse_bin_file(filepath)
+            fields = get_fields_from_bin(messages_by_type, msg_type)
+            return render_template('bin_log_explorer.html',
+                                   filename=filename,
+                                   selected_type=msg_type,
+                                   fields=fields)
+
+        # Step 3: Field selected
+        elif filename and msg_type and field_name:
+            filepath = os.path.join(upload_dir, filename)
+            _, messages_by_type = parse_bin_file(filepath)
+            report_data = extract_field_data_bin(messages_by_type, msg_type, field_name)
+            return render_template('bin_log_explorer.html',
+                                   filename=filename,
+                                   selected_type=msg_type,
+                                   selected_field=field_name,
+                                   report_data=report_data)
+
+    # Initial GET
+    return render_template('bin_log_explorer.html')
