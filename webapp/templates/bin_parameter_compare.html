@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Compare ArduPilot Parameters</title>
+</head>
+<body>
+    <h1>Compare ArduPilot Parameters</h1>
+
+    {% if not diffs %}
+        <form method="post" enctype="multipart/form-data">
+            <label for="logfile1">Upload first log file:</label>
+            <input type="file" name="logfile1" accept=".BIN"><br><br>
+
+            <label for="logfile2">Upload second log file:</label>
+            <input type="file" name="logfile2" accept=".BIN"><br><br>
+
+            <input type="submit" value="Compare">
+        </form>
+    {% endif %}
+
+    {% if diffs %}
+        <p><strong>Comparing:</strong> {{ log1 }} ↔ {{ log2 }}</p>
+
+        <h3>Firmware Versions</h3>
+        <ul>
+            <li>{{ log1 }}: {{ version1 }}</li>
+            <li>{{ log2 }}: {{ version2 }}</li>
+        </ul>
+
+        <h2>Parameter Differences</h2>
+        <table border="1" cellpadding="6" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Parameter Name</th>
+                    <th>{{ log1 }}</th>
+                    <th>{{ log2 }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for param, val1, val2 in diffs %}
+                    <tr>
+                        <td>{{ param }}</td>
+                        <td>{{ val1 }}</td>
+                        <td>{{ val2 }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    {% if error %}
+        <p style="color: red;"><strong>{{ error }}</strong></p>
+    {% endif %}
+
+    <hr>
+    <a href="/bin-parameter-compare">Compare another pair</a>
+</body>
+</html>

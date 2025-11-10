@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Compare ArduPilot Parameters</title>
+</head>
+<body>
+    <h1>Compare ArduPilot Parameters</h1>
+
+    {% if not diffs %}
+        <form method="post">
+            <label for="log1">Select first log file:</label>
+            <select name="log1" id="log1">
+                {% for file in available_logs %}
+                    <option value="{{ file }}">{{ file }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="log2">Select second log file:</label>
+            <select name="log2" id="log2">
+                {% for file in available_logs %}
+                    <option value="{{ file }}">{{ file }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="submit" value="Compare">
+        </form>
+    {% endif %}
+
+    {% if diffs %}
+        <p><strong>Comparing:</strong> {{ log1 }} ↔ {{ log2 }}</p>
+        <h2>Parameter Differences</h2>
+        {% if diffs|length > 0 %}
+            <table border="1" cellpadding="6" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Parameter Name</th>
+                        <th>{{ log1 }}</th>
+                        <th>{{ log2 }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for param, val1, val2 in diffs %}
+                        <tr>
+                            <td>{{ param }}</td>
+                            <td>{{ val1 }}</td>
+                            <td>{{ val2 }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>✅ No parameter differences found between the two logs.</p>
+        {% endif %}
+    {% endif %}
+
+    <hr>
+    <a href="/bin-parameter-compare">Compare another pair</a>
+</body>
+</html>
