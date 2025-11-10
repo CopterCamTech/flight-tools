@@ -58,10 +58,11 @@ flight-tools/webapp/uploads/        # Temporary storage for uploaded logs and cr
 | bin_range_signal.py | `.bin`  ArduPilot | CLI & FLASK | Charts control and telemetry radio RSSI & LQ against 3D distance |
 | bin_power_plot.py | `.bin`  ArduPilot | CLI & FLASK | Charts voltage, amperage and watt-hours |
 | bin_log_explorer.py | `.bin` Ardupilot | FLASK only | Allows drilling down through log message types and field names to display field values |
+| bin_parameter_compare.py | `.bin`  ArduPilot | FLASK only | Compares parameters from two .bin log files |
 | ulg_info.py | `.ulg`  PX4 | CLI & FLASK | Lists record types |
 | ulg_parameter.list.py | `.ulg`  PX4 | CLI & FLASK | Lists parameters and their values |
 | ulg_range_signal.py | `.ulg`  PX4 | CLI & FLASK | Charts control and telemetry radio RSSI & LQ against 3D distance |
-| ulg_power_plot.py | `ulg`  PX4 | CLI & FLASK | Charts voltage, amperage and watt-hours |
+| ulg_power_plot.py | `.ulg`  PX4 | CLI & FLASK | Charts voltage, amperage and watt-hours |
 | ulg_log_explorer.py | `.ulg`  PX4 | FLASK only | Allows drilling down through log message type and field names to display field values |
 
 
@@ -111,6 +112,7 @@ Web requests to a FLASK web server are routed to the appropriate script by suppo
 | `bin_range_signal.py` | `http://localhost:5000/bin-range-signal` |
 | `bin_power_plot.py` | `http://localhost:5000/bin-power-plot` |
 | `bin_log_explorer.py` | `http://localhost:5000/bin-log-explorer` |
+| `bin_parameter_compare.py` | `http://localhost:5000/bin-parameter-compare` |
 | `ulg_info.py` | `http://localhost:5000/ulg-info` |
 | `ulg_parameter_list.py` | `http://localhost:5000/ulg-parameter-list` |
 | `ulg_range_signal.py` | `http://localhost:5000/ulg-range-signal`|
