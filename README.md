@@ -10,15 +10,16 @@ I have future plans to write Windows executable versions of these scripts - whic
 
 ## 🚀 Features
 
-### Mulitple operating environments:
+### Mulitple operating modes and environments:
   - **Headless** using commands and parameters (CLI Mode)
     - Text output presented to the terminal
     - Graphic output saved as .PNG files
     - Graphic output automatically displayed where associated apps for .PNG display exist
-  - **GUI** using web browsers (FLASK Mode)
+  - **HTML GUI** Interactive GUI using web browsers (FLASK Mode)
     - Local GUI operation uses FLASK
     - Remote GUI operation uses FLASK, but a reverse proxy web server is recommended
-  - **Linux** and **Windows** compatibility
+  - **Flet GUI** Stand alone command line scripts using Flet for GUI user interaction
+  - **Windows** Windows executables of Flet enabled scripts
 
 ### PX4 and ArduPilot support:
   - Scripts are coded individually for PX4 and ArduPilot log files
@@ -29,10 +30,10 @@ I have future plans to write Windows executable versions of these scripts - whic
   - `PYPROJECT.TOML` supports UV
 
 
-## 💡 Try the Live Version
+## 💡 Try the Live Version and Windows Executables
 
-Go to [www.coptercam.tech](https://www.coptercam.tech/flight-tools) for live versions of Flight-Tools scripts.
-You can explore log analysis, chart rendering, and route visualization directly in your browser—no setup required.
+Go to [www.coptercam.tech](https://www.coptercam.tech/flight-tools) for live website versions of Flight-Tools scripts and Windows Executables.
+You can explore log analysis, chart rendering, and route visualization directly in your browser or Windows workstation — no setup required.
 
 ##   🐍 Python Dependencies and Requirements
 
@@ -49,7 +50,7 @@ flight-tools/webapp/templates/      # HTML templates for web interface
 flight-tools/webapp/uploads/        # Temporary storage for uploaded logs and created chart .png files
 ```
 
-## 👉 Python scripts in `flight-tools/tools`
+## 👉 CLI and Flask Python scripts in `flight-tools/tools`
 
 | Script Name | Log Type | Mode | Description |
 |---|---|---|---|
@@ -64,6 +65,26 @@ flight-tools/webapp/uploads/        # Temporary storage for uploaded logs and cr
 | ulg_range_signal.py | `.ulg`  PX4 | CLI & FLASK | Charts control and telemetry radio RSSI & LQ against 3D distance |
 | ulg_power_plot.py | `.ulg`  PX4 | CLI & FLASK | Charts voltage, amperage and watt-hours |
 | ulg_log_explorer.py | `.ulg`  PX4 | FLASK only | Allows drilling down through log message type and field names to display field values |
+
+
+## 👉 Flet enabled Python scripts in `flight-tools/tools`
+
+| Script Name | Log Type | Mode | Description |
+|---|---|---|---|
+| bin_info_flet.py | `.bin`  ArduPilot | CLI | Lists record types |
+| bin_parameter_list_flet.py | `.bin`  ArduPilot | CLI | Lists parameters and their values |
+| bin_range_signal_flet.py | `.bin`  ArduPilot | CLI | Charts control and telemetry radio RSSI & LQ against 3D distance |
+| bin_power_plot_flet.py | `.bin`  ArduPilot | CLI | Charts voltage, amperage and watt-hours |
+| bin_log_explorer_flet.py | `.bin` Ardupilot | CLI | Allows drilling down through log message types and field names to display field values |
+| bin_parameter_compare_flet.py | `.bin`  ArduPilot | CLI | Compares parameters from two .bin log files |
+| ulg_info_flet.py | `.ulg`  PX4 | CLI | Lists record types |
+| ulg_parameter_flet.list.py | `.ulg`  PX4 | CLI | Lists parameters and their values |
+| ulg_range_signal_flet.py | `.ulg`  PX4 | CLI | Charts control and telemetry radio RSSI & LQ against 3D distance |
+| ulg_power_plot_flet.py | `.ulg`  PX4 | CLI | Charts voltage, amperage and watt-hours |
+| ulg_log_explorer_flet.py | `.ulg`  PX4 | CLI | Allows drilling down through log message type and field names to display field values |
+
+
+
 
 
 ## 👉 CLI Mode (command line) Requirements & Syntax
