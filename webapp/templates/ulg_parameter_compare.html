@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Compare ArduPilot Parameters</title>
+    <title>Compare PX4 Parameters</title>
 </head>
 <body>
-    <h1>Compare ArduPilot Parameters</h1>
+    <h1>Compare PX4 Parameters</h1>
 
     {% if not summary or summary.error %}
         <form method="post" enctype="multipart/form-data">
-            <label for="logfile1">Upload first .bin file:</label>
-            <input type="file" name="logfile1" accept=".bin"><br>
+            <label for="logfile1">Upload first .ulg file:</label>
+            <input type="file" name="logfile1" accept=".ulg"><br>
             <label for="file1_mode">Use which parameter instance?</label>
             <select name="file1_mode">
-                <option value="final" selected>Final</option>
-                <option value="initial">Initial</option>
+                <option value="last" selected>Last</option>
+                <option value="first">First</option>
             </select><br><br>
 
-            <label for="logfile2">Upload second .bin file:</label>
-            <input type="file" name="logfile2" accept=".bin"><br>
+            <label for="logfile2">Upload second .ulg file:</label>
+            <input type="file" name="logfile2" accept=".ulg"><br>
             <label for="file2_mode">Use which parameter instance?</label>
             <select name="file2_mode">
-                <option value="final" selected>Final</option>
-                <option value="initial">Initial</option>
+                <option value="last" selected>Last</option>
+                <option value="first">First</option>
             </select><br><br>
 
             <input type="submit" value="Compare">
@@ -29,8 +29,8 @@
     {% endif %}
 
     {% if summary and not summary.error %}
-        <p><strong>Comparing:</strong> {{ summary.file1 }} ({{ request.form.get('file1_mode', 'final') }} instance)
-        ↔ {{ summary.file2 }} ({{ request.form.get('file2_mode', 'final') }} instance)</p>
+        <p><strong>Comparing:</strong> {{ summary.file1 }} ({{ request.form.get('file1_mode', 'last') }} instance)
+        ↔ {{ summary.file2 }} ({{ request.form.get('file2_mode', 'last') }} instance)</p>
 
         <h2>Parameter Differences</h2>
         {% if summary.differences %}
@@ -46,8 +46,8 @@
                     {% for key, values in summary.differences.items() %}
                         <tr>
                             <td>{{ key }}</td>
-                            <td>{{ values[0] if values[0] is not none else "N/A" }}</td>
-                            <td>{{ values[1] if values[1] is not none else "N/A" }}</td>
+                            <td>{{ values[0] if values[0] is not none else "missing" }}</td>
+                            <td>{{ values[1] if values[1] is not none else "missing" }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -63,6 +63,6 @@
     {% endif %}
 
     <hr>
-    <a href="/bin-parameter-compare">Compare another pair</a>
+    <a href="/ulg-parameter-compare">Compare another pair</a>
 </body>
 </html>

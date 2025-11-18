@@ -15,9 +15,11 @@ dependencies = [
   "numpy",
   "matplotlib",
   "pyulog",
-  "pymavlink==2.4.49"
+  "pymavlink==2.4.49",
+  "flet>=0.25"
 ]
 
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+

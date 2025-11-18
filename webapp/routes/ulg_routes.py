@@ -1,3 +1,5 @@
+from tools.ulg_parameter_compare import compare_parameters
+
 from flask import Blueprint, request, render_template, current_app
 import os
 from werkzeug.utils import secure_filename
@@ -13,6 +15,46 @@ from tools.ulg_log_explorer import (
 )
 
 ulg_bp = Blueprint('ulg_bp', __name__)
+
+
+@ulg_bp.route('/ulg-parameter-compare', methods=['GET', 'POST'])
+def ulg_parameter_compare():
+    summary = None
+    filename1 = None
+    filename2 = None
+
+    if request.method == 'POST':
+        file1 = request.files.get('logfile1')
+        file2 = request.files.get('logfile2')
+        mode1 = request.form.get('file1_mode', 'last')
+        mode2 = request.form.get('file2_mode', 'last')
+
+        if not file1 or not file2:
+            summary = {'error': 'Two .ulg files must be uploaded.'}
+        elif not file1.filename.lower().endswith('.ulg') or not file2.filename.lower().endswith('.ulg'):
+            summary = {'error': 'Invalid file type. Please upload .ulg files only.'}
+        else:
+            upload_dir = current_app.config['UPLOAD_FOLDER']
+
+            filename1 = secure_filename(file1.filename)
+            filepath1 = os.path.join(upload_dir, filename1)
+            file1.save(filepath1)
+
+            filename2 = secure_filename(file2.filename)
+            filepath2 = os.path.join(upload_dir, filename2)
+            file2.save(filepath2)
+
+            result = compare_parameters(filepath1, filepath2, mode1, mode2)
+            summary = result
+
+    return render_template('ulg_parameter_compare.html',
+                           summary=summary,
+                           filename1=filename1,
+                           filename2=filename2)
+
+
+
+
 
 @ulg_bp.route('/ulg-power-plot', methods=['GET', 'POST'])
 def ulg_power_plot():

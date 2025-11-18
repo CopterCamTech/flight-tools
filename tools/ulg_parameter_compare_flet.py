@@ -3,38 +3,13 @@
 import os
 import csv
 import flet as ft
-from pymavlink import DFReader
-
-def parse_bin_file(filepath):
-    reader = DFReader.DFReader_binary(filepath)
-    message_types = set()
-    messages_by_type = {}
-    while True:
-        msg = reader.recv_msg()
-        if msg is None:
-            break
-        msg_type = msg.get_type()
-        message_types.add(msg_type)
-        messages_by_type.setdefault(msg_type, []).append(msg)
-    return sorted(message_types), messages_by_type
+from pyulog import ULog
 
 def extract_parameters(filepath, mode="final"):
-    """Extract parameters from a .bin file."""
-    _, messages_by_type = parse_bin_file(filepath)
-    param_messages = messages_by_type.get("PARM", []) + messages_by_type.get("PARAM", [])
+    ulog = ULog(filepath)
     parameters = {}
-    for msg in param_messages:
-        try:
-            name = getattr(msg, "Name", None) or getattr(msg, "name", None)
-            value = getattr(msg, "Value", None) or getattr(msg, "value", None)
-            if name is not None and value is not None:
-                if mode == "initial":
-                    if name not in parameters:  # keep first occurrence
-                        parameters[name] = value
-                else:  # "final"
-                    parameters[name] = value  # overwrite, last occurrence wins
-        except Exception:
-            continue
+    for name, value in ulog.initial_parameters.items():
+        parameters[name] = value
     return parameters
 
 def compare_parameters(params1, params2):
@@ -48,7 +23,7 @@ def compare_parameters(params1, params2):
     return diffs
 
 def main(page: ft.Page):
-    page.title = "ArduPilot BIN Parameter Compare"
+    page.title = "PX4 ULG Parameter Compare"
     page.scroll = "auto"
 
     log1_path = None
@@ -161,7 +136,7 @@ def main(page: ft.Page):
     def export_clicked(e):
         if diffs:
             save_picker.save_file(
-                file_name="bin_parameter_diff.csv",
+                file_name="ulg_parameter_diff.csv",
                 allowed_extensions=["csv"]
             )
 
@@ -236,22 +211,22 @@ def main(page: ft.Page):
     compare_button.on_click = run_comparison
 
     pick_button1 = ft.ElevatedButton(
-        "Select First .bin Log File",
+        "Select First .ulg Log File",
         on_click=lambda _: file_picker1.pick_files(
-            allowed_extensions=["bin"], allow_multiple=False
+            allowed_extensions=["ulg"], allow_multiple=False
         )
     )
 
     pick_button2 = ft.ElevatedButton(
-        "Select Second .bin Log File",
+        "Select Second .ulg Log File",
         on_click=lambda _: file_picker2.pick_files(
-            allowed_extensions=["bin"], allow_multiple=False
+            allowed_extensions=["ulg"], allow_multiple=False
         )
     )
 
     page.add(
         ft.Column([
-            ft.Text("ArduPilot BIN Parameter Compare", size=20, weight="bold"),
+            ft.Text("PX4 ULG Parameter Compare", size=20, weight="bold"),
             pick_button1,
             log1_label,
             ft.Row([initial_checkbox1, final_checkbox1]),

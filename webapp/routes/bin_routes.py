@@ -10,15 +10,13 @@ from tools.bin_log_explorer import (
     get_fields_from_bin,
     extract_field_data_bin
 )
-from tools.bin_parameter_compare import compare_parameters, extract_parameters
+from tools.bin_parameter_compare import compare_parameters
 
 bin_bp = Blueprint('bin_bp', __name__)
 
 # ✅ Local helper functions for this route
 def get_message_types(messages):
     return sorted(set(msg.get_type() for msg in messages if hasattr(msg, 'get_type')))
-
-
 
 def get_firmware_version(messages_by_type):
     msg_list = messages_by_type.get('MSG', [])
@@ -30,10 +28,6 @@ def get_firmware_version(messages_by_type):
         except Exception:
             continue
     return "Unknown version"
-
-
-
-
 
 @bin_bp.route('/bin-info', methods=['GET', 'POST'])
 def bin_info():
@@ -164,6 +158,8 @@ def bin_parameter_compare():
     if request.method == 'POST':
         file1 = request.files.get('logfile1')
         file2 = request.files.get('logfile2')
+        file1_mode = request.form.get('file1_mode', 'final')
+        file2_mode = request.form.get('file2_mode', 'final')
 
         if not file1 or not file2:
             flash("Please upload two log files.")
@@ -177,46 +173,17 @@ def bin_parameter_compare():
         file1.save(path1)
         file2.save(path2)
 
-        # Parse logs
+        # Compare directly using file paths and modes
+        summary = compare_parameters(path1, path2,
+                                     mode1=file1_mode,
+                                     mode2=file2_mode)
+
+        # Add firmware version info
         _, messages_by_type1 = parse_bin_file(path1)
         _, messages_by_type2 = parse_bin_file(path2)
+        summary['version1'] = get_firmware_version(messages_by_type1)
+        summary['version2'] = get_firmware_version(messages_by_type2)
 
- #       print("Sample MSG from log 1:", messages_by_type1.get('MSG', [])[0])
- #       print("Sample MSG from log 2:", messages_by_type2.get('MSG', [])[0])
-
-        types1 = get_message_types(messages_by_type1.get('MSG', []))
-        types2 = get_message_types(messages_by_type2.get('MSG', []))
-
-        version1 = get_firmware_version(messages_by_type1)
-        version2 = get_firmware_version(messages_by_type2)
-
-        if types1 != types2:
-            return render_template(
-                'bin_parameter_compare.html',
-                log1=filename1,
-                log2=filename2,
-                version1=version1,
-                version2=version2,
-                error="Message types differ—comparison skipped due to format mismatch."
-            )
-
-        # Proceed with parameter extraction and comparison
-        params1 = extract_parameters(path1)
-        params2 = extract_parameters(path2)
-        
-#        print("Params1 count:", len(params1))
-#        print("Params2 count:", len(params2))
-        
-        
-        diffs = compare_parameters(params1, params2)
-
-        return render_template(
-            'bin_parameter_compare.html',
-            log1=filename1,
-            log2=filename2,
-            version1=version1,
-            version2=version2,
-            diffs=diffs
-        )
+        return render_template('bin_parameter_compare.html', summary=summary)
 
     return render_template('bin_parameter_compare.html')
